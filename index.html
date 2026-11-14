@@ -37,6 +37,7 @@
   --radio: 12px;
 }
 * { box-sizing: border-box; }
+[hidden] { display: none !important; }
 body {
   margin: 0;
   background: var(--papel);
@@ -610,6 +611,7 @@ button:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-
   }
   function revisarFoco() {
     if (!vistoFoco || fueraPorFoco || !activo() || VIGILADAS_FOCO.indexOf(S.vista) < 0) return;
+    if (conAudifonos || Date.now() < calmaHasta) return;   // micrófono, audífonos conectándose o lectura tapada
     if (document.visibilityState !== 'visible') return;   // eso ya lo cuenta la salida normal
     if (tieneFoco()) return;
     fueraPorFoco = true;
@@ -675,6 +677,9 @@ button:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-
   // "Headset earpiece" es el auricular del propio teléfono: siempre aparece y no cuenta.
   var conAudifonos = false;
   var tAudio = null;
+  // Hasta cuándo no cuenta la pérdida de foco: la ventana de permiso del micrófono y la ventanita que
+  // algunos celulares muestran al conectar audífonos le quitan el foco a la página unos segundos.
+  var calmaHasta = 0;
   var AUDIFONOS = /bluetooth|wired|usb|airpods|buds|headphone|aud[ií]fono|auricular|hands-?free|manos libres/i;
   function esAudifono(d) {
     var n = d.label || '';
@@ -684,10 +689,13 @@ button:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-
   function pedirMicrofono() {
     var md = navigator.mediaDevices;
     if (!md || !md.getUserMedia) return Promise.reject(new Error('sin-micro'));
+    calmaHasta = Infinity;
+    function fin() { calmaHasta = Date.now() + 2500; sinFoco = 0; }
     return md.getUserMedia({ audio: true }).then(function (s) {
       s.getTracks().forEach(function (t) { t.stop(); });
+      fin();
       return true;
-    });
+    }, function (e) { fin(); throw e; });
   }
   function revisarAudifonos() {
     var md = navigator.mediaDevices;
@@ -714,11 +722,12 @@ button:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-
   document.getElementById('audio-boton').addEventListener('click', function () {
     pedirMicrofono().then(revisarAudifonos).catch(function () {
       document.getElementById('audio-texto').textContent =
-        'El navegador no dejó usar el micrófono. Toca el candado junto a la dirección de la página, permite el micrófono y vuelve a tocar el botón.';
+        'El navegador no dejó usar el micrófono. Toca el candado junto a la dirección de la página, permite el micrófono y vuelve a tocar el botón. Si no te aparece ninguna pregunta, copia el enlace y ábrelo en Chrome (en iPhone, en Safari).';
     });
   });
   if (navigator.mediaDevices && navigator.mediaDevices.addEventListener) {
     navigator.mediaDevices.addEventListener('devicechange', function () {
+      calmaHasta = Math.max(calmaHasta, Date.now() + 5000);
       clearTimeout(tAudio); tAudio = setTimeout(revisarAudifonos, 300);
     });
   }
@@ -988,7 +997,7 @@ button:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-
         registrar('inicio');
         revisarAudifonos();
       }).catch(function () {
-        aviso.textContent = 'Para empezar tienes que permitir el micrófono. No se graba nada: sólo sirve para saber si hay audífonos conectados. Si ya lo negaste, toca el candado junto a la dirección de la página, permite el micrófono y vuelve a tocar "Empezar la lectura".';
+        aviso.textContent = 'Para empezar tienes que permitir el micrófono. No se graba nada: sólo sirve para saber si hay audífonos conectados. Si ya lo negaste, toca el candado junto a la dirección de la página, permite el micrófono y vuelve a tocar "Empezar la lectura". Si no te aparece ninguna pregunta, copia el enlace y ábrelo en Chrome (en iPhone, en Safari).';
         aviso.hidden = false;
       });
     });
