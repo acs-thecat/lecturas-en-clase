@@ -373,7 +373,7 @@ button:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-
 </div>
 <div class="cubierta" id="cubierta-audio" hidden role="alertdialog" aria-modal="true" aria-labelledby="audio-titulo">
   <div class="tarjeta">
-    <h2 id="audio-titulo">Quítate los audífonos</h2>
+    <h2 id="audio-titulo">Apaga el Bluetooth y quítate los audífonos</h2>
     <p id="audio-texto"></p>
     <p class="consejo">Esto no cuenta como salida.</p>
     <button class="primario" id="audio-boton" type="button" hidden>Permitir el micrófono</button>
@@ -710,10 +710,10 @@ button:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-
   function ponerAudio(tapar, faltaPermiso) {
     var c = document.getElementById('cubierta-audio');
     if (!tapar) { conAudifonos = false; c.hidden = true; return; }
-    document.getElementById('audio-titulo').textContent = faltaPermiso ? 'Vuelve a permitir el micrófono' : 'Quítate los audífonos';
+    document.getElementById('audio-titulo').textContent = faltaPermiso ? 'Vuelve a permitir el micrófono' : 'Apaga el Bluetooth y quítate los audífonos';
     document.getElementById('audio-texto').textContent = faltaPermiso
       ? 'Para seguir con la lectura, permite el micrófono otra vez. No se graba nada: sólo sirve para saber si hay audífonos conectados.'
-      : 'Hay audífonos conectados a tu celular. Mientras sigan conectados, el texto y las preguntas no se ven. Desconéctalos (o apaga el Bluetooth) y la lectura vuelve sola.';
+      : 'Tu celular tiene conectados audífonos u otro aparato, como un reloj inteligente. Mientras sigan conectados, el texto y las preguntas no se ven. Apaga el Bluetooth (o desconecta los audífonos) y la lectura vuelve sola.';
     document.getElementById('audio-boton').hidden = !faltaPermiso;
     if (!faltaPermiso && !conAudifonos && S) { S.audifonos = (S.audifonos || 0) + 1; guardarLocal(); }
     conAudifonos = !faltaPermiso;
@@ -944,8 +944,8 @@ button:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-
         el('li', null, [el('b', { text: 'No salgas de esta pantalla. ' }),
           'Cambiar de app o de pestaña, usar otra app con la lectura en ventana flotante, en miniatura o en pantalla dividida, recargar la página o dejar que se apague la pantalla cuenta como salida.' +
           (p.cada > 0 ? ' Cada ' + p.cada + ' salidas se te resta ' + puntos(p.resta) + ' de la calificación.' : '')]),
-        el('li', null, [el('b', { text: 'Sin audífonos. ' }),
-          'Al empezar, la página te pide el micrófono: no graba nada, sólo revisa si hay audífonos conectados. Mientras haya audífonos, la lectura se tapa.']),
+        el('li', null, [el('b', { text: 'Sin audífonos ni reloj inteligente. ' }),
+          'Antes de empezar, apaga el Bluetooth de tu celular. Al empezar, la página te pide el micrófono: no graba nada, sólo revisa si hay algo conectado. Mientras haya audífonos o un reloj conectados, la lectura se tapa.']),
         el('li', null, [el('b', { text: 'El texto no se puede copiar. ' }),
           CIERRE.length ? 'Tampoco se puede pegar en las respuestas abiertas.' : 'Contesta con lo que leíste.']),
         maxIntentos() > 1 ? el('li', null, [el('b', { text: 'Tienes ' + maxIntentos() + ' intentos. ' }),
@@ -953,7 +953,7 @@ button:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-
           'Si te sales mucho o no entendiste la dinámica, el botón "Reiniciar" de arriba te deja empezar de cero, pero usa tu otro intento.']) : null,
         el('li', null, [el('b', { text: 'Al final verás tu constancia. ' }), 'Tómale captura y súbela a Academic: esa es tu entrega.'])
       ]),
-      el('p', { class: 'consejo', text: 'Antes de empezar, cierra las otras apps y sube el tiempo de apagado de tu pantalla a 2 minutos o más.' }),
+      el('p', { class: 'consejo', text: 'Antes de empezar, apaga el Bluetooth, quítate audífonos y reloj inteligente, cierra las otras apps y sube el tiempo de apagado de tu pantalla a 2 minutos o más.' }),
       almacenOk ? null : el('p', { class: 'error', text: 'Tu navegador no guarda el avance: no recargues la página hasta enviar.' })
     ]);
 
