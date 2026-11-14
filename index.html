@@ -317,6 +317,12 @@ button:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-
 }
 .cubierta .tarjeta { max-width: 26rem; width: 100%; border: 2px solid var(--mal); }
 #cubierta-audio { z-index: 31; }
+.leer p, .leer li, .tarjeta p, .tarjeta li, .portada .fuente, .enunciado, .nota-campo, .instruccion {
+  text-align: justify;
+  -webkit-hyphens: auto;
+  hyphens: auto;
+}
+.ceja, .sello, .tarjeta .ceja, .tarjeta .sello, .tarjeta .intentos li { text-align: start; -webkit-hyphens: manual; hyphens: manual; }
 .velo h2 { font-size: 1.25rem; }
 
 .centro { text-align: center; color: var(--tenue); padding: 40px 0; }
