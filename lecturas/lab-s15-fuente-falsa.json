@@ -1,0 +1,211 @@
+{
+ "clave": "lab-s15-fuente-falsa",
+ "materia": "Laboratorio de Investigación",
+ "titulo": "Actividad 4. ¿Cuál es la fuente falsa?",
+ "descripcion": "Actividad en equipos de 4. Cuatro párrafos sobre la historia del reguetón traen citas con autor, año y página, pero no todas son confiables. Léanlos, contesten, busquen cada cita en su página y decidan cuáles fallan y por qué. Pongan en el nombre los cuatro integrantes. Una persona se queda con la app abierta y las demás buscan en sus celulares.",
+ "fuente": "Texto escrito para la actividad.",
+ "grupos": [
+  "B1 A",
+  "B1 B",
+  "B1 C",
+  "B1 D",
+  "INT 1 A"
+ ],
+ "abierta": true,
+ "ventana": {
+  "desde": null,
+  "hasta": null
+ },
+ "escala": {
+  "min": 1,
+  "max": 10,
+  "redondeo": "arriba"
+ },
+ "penalizacion": {
+  "cada": 3,
+  "resta": 1
+ },
+ "intentos": 2,
+ "cuenta": "mejor",
+ "bloques": [
+  {
+   "titulo": "Primera parte: los párrafos",
+   "texto": [
+    {
+     "t": "nota",
+     "x": "Lean los cuatro párrafos en equipo. Las citas siguen el estilo Chicago: (autor año, página). No todas son confiables."
+    },
+    {
+     "t": "p",
+     "x": "Durante años se contó que el reguetón nació en Panamá y que Puerto Rico sólo lo copió. Wayne Marshall, Raquel Z. Rivera y Deborah Pacini Hernández desarman esa versión. Para ellos, el género salió de un circuito de ida y vuelta entre Jamaica, Panamá, Puerto Rico y Nueva York, y lo dicen sin rodeos: \"Sin el reggae dancehall jamaiquino definitivamente no habría reggaetón\" (Marshall, Rivera y Pacini Hernández 2010, 6). Hasta el panameño El General grabó en Nueva York, no en su país, los temas que llevaron el reggae en español a la fama (Marshall, Rivera y Pacini Hernández 2010, 6)."
+    },
+    {
+     "t": "p",
+     "x": "¿Y el perreo? Los mismos autores sostienen que el baile no nació en las discotecas, sino en los caseríos de San Juan, a mediados de los noventa, como respuesta a la policía. Lo escriben así: \"El perreo fue, desde el principio, una forma de protesta. Se bailaba frente a las patrullas para que nadie pudiera prohibirlo\" (Marshall, Rivera y Pacini Hernández 2010, 3). Bailar, entonces, era resistir."
+    },
+    {
+     "t": "p",
+     "x": "La música también separaba por clase. En los años setenta, el roots reggae de Bob Marley tuvo en Puerto Rico a sus fans más entusiastas entre jóvenes de clase media y alta, casi todos blancos. En los noventa, en cambio, el dancehall en español lo adoptó la juventud de clase baja que ya escuchaba rap (Marshall, Rivera y Pacini Hernández 2010, 4). El mismo ritmo jamaiquino, pero dos públicos que no se mezclaban."
+    },
+    {
+     "t": "p",
+     "x": "Por eso el underground de San Juan fue perseguido. A mediados de los noventa, durante la campaña \"Mano Dura contra el Crimen\", la policía de Puerto Rico decomisó casetes en tiendas de discos de San Juan. Petra R. Rivera-Rideau sostiene que el castigo tenía color: \"No se censuraba una letra, se censuraba un barrio negro\" (Rivera-Rideau 2015, 47). Veinte años después, ese mismo ritmo sonaba en todas las bodas."
+    },
+    {
+     "t": "h",
+     "x": "Referencias"
+    },
+    {
+     "t": "n",
+     "x": "Marshall, Wayne, Raquel Z. Rivera y Deborah Pacini Hernández. 2010. \"Los circuitos socio-sónicos del reggaetón\". Trans. Revista Transcultural de Música, núm. 14: 1-9."
+    },
+    {
+     "t": "n",
+     "x": "Rivera-Rideau, Petra R. 2015. Perreo y nación: raza y censura en el reguetón puertorriqueño. Durham: Duke University Press."
+    }
+   ],
+   "preguntas": [
+    {
+     "q": "Según el primer párrafo, ¿qué se puede inferir sobre el origen del reguetón?",
+     "ops": [
+      "Que no tiene un solo lugar de origen",
+      "Que nació en Panamá y Puerto Rico lo copió",
+      "Que nació en Nueva York",
+      "Que es un género jamaiquino cantado en español"
+     ],
+     "k": "c430e6697c614dae"
+    },
+    {
+     "q": "¿Qué quiere decir la cita \"Sin el reggae dancehall jamaiquino definitivamente no habría reggaetón\"?",
+     "ops": [
+      "Que el dancehall de Jamaica es una base indispensable del reguetón",
+      "Que el reguetón es mejor que el dancehall",
+      "Que el reguetón nació en Jamaica",
+      "Que el dancehall desapareció cuando llegó el reguetón"
+     ],
+     "k": "8ac0ecf5fd5ecc63"
+    },
+    {
+     "q": "¿Qué idea defiende el segundo párrafo?",
+     "ops": [
+      "Que el perreo nació como protesta frente a la policía",
+      "Que el perreo nació en las discotecas",
+      "Que la policía inventó el perreo",
+      "Que el perreo es un baile panameño"
+     ],
+     "k": "52366116ab7fa632"
+    },
+    {
+     "q": "¿Qué se puede inferir del tercer párrafo?",
+     "ops": [
+      "Que en Puerto Rico el gusto musical marcaba diferencias de clase",
+      "Que Bob Marley grabó en Puerto Rico",
+      "Que el rap y el dancehall tenían el mismo público que el roots reggae",
+      "Que los jóvenes de clase alta inventaron el underground"
+     ],
+     "k": "6924e14de59718f3"
+    },
+    {
+     "q": "Según el cuarto párrafo, ¿por qué se persiguió el underground?",
+     "ops": [
+      "Porque se asociaba con barrios negros y pobres",
+      "Porque sus letras hablaban de política",
+      "Porque se vendía sin pagar impuestos",
+      "Porque venía de Panamá"
+     ],
+     "k": "f5fedc8bffa99f00"
+    }
+   ]
+  },
+  {
+   "titulo": "Segunda parte: verifiquen",
+   "texto": [
+    {
+     "t": "p",
+     "x": "Ahora busquen cada cita fuera de la app, como el periodista de Forbes buscó la empresa del reportaje de Glass. Una persona del equipo se queda con la app abierta; las otras tres buscan en sus celulares."
+    },
+    {
+     "t": "b",
+     "x": "El artículo de Marshall, Rivera y Pacini Hernández está completo y gratis en Redalyc: busquen su título. La página 1 del artículo es la segunda del PDF (la primera es la portada de Redalyc)."
+    },
+    {
+     "t": "b",
+     "x": "Vayan a la página que dice cada cita y busquen las palabras entre comillas. Si no están, lean qué dice en realidad esa página."
+    },
+    {
+     "t": "b",
+     "x": "El libro de Petra R. Rivera-Rideau: búsquenlo por su título en Google Libros, en el sitio de Duke University Press o en un catálogo de biblioteca."
+    },
+    {
+     "t": "p",
+     "x": "Anoten qué encontró cada quien y dónde. Luego contesten."
+    }
+   ],
+   "preguntas": [
+    {
+     "q": "¿Qué encontraron en la página 6 del artículo sobre El General?",
+     "ops": [
+      "Que vivía en Nueva York cuando grabó los temas que lo hicieron famoso",
+      "Que nunca salió de Panamá",
+      "Que grabó sus temas en Puerto Rico",
+      "La página 6 no habla de El General"
+     ],
+     "k": "5af9b6e60c3c1d5b"
+    },
+    {
+     "q": "¿Qué pasa con la cita del perreo en la página 3?",
+     "ops": [
+      "No aparece: esa página trata de cómo escribir la palabra reggaetón",
+      "Aparece tal cual",
+      "Aparece, pero en la página 5",
+      "Aparece, pero dice que el perreo nació en Panamá"
+     ],
+     "k": "bb4ca3396fd8debc"
+    },
+    {
+     "q": "¿Qué pasa con el libro de Rivera-Rideau?",
+     "ops": [
+      "La autora es real y estudia la censura del reguetón, pero ese libro no existe: el suyo se llama Remixing Reggaetón",
+      "La autora no existe",
+      "El libro existe y la cita está en la página 47",
+      "La autora nunca ha escrito sobre reguetón"
+     ],
+     "k": "e7f2451356111ebc"
+    },
+    {
+     "q": "¿Qué párrafos citan bien su fuente?",
+     "ops": [
+      "El primero y el tercero",
+      "Los cuatro",
+      "Sólo el segundo y el cuarto",
+      "Ninguno"
+     ],
+     "k": "c85137e8bec1742c"
+    },
+    {
+     "q": "¿Qué enseña que los párrafos 1 y 2 citen el mismo artículo?",
+     "ops": [
+      "Que una fuente real puede estar bien citada en un lugar e inventada en otro",
+      "Que si el artículo existe, todas sus citas son ciertas",
+      "Que no se debe citar dos veces la misma fuente",
+      "Que los artículos de revista no son confiables"
+     ],
+     "k": "b4f92d45d22a67e5"
+    }
+   ]
+  }
+ ],
+ "cierre": [
+  {
+   "q": "Describan paso a paso cómo revisó el equipo cada fuente: dónde buscaron, qué encontraron y qué no encontraron.",
+   "ayuda": ""
+  },
+  {
+   "q": "Comparen su procedimiento con el del periodista de Forbes en la película. ¿Qué pasos tienen en común y cuál les faltó?",
+   "ayuda": ""
+  }
+ ],
+ "version": "104f918e4d",
+ "generada": "2026-11-13",
+ "origen": "escrita para la Actividad 4"
+}

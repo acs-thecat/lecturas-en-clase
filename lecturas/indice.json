@@ -1,1 +1,10 @@
-{"lecturas":[]}
+{
+  "lecturas": [
+    {
+      "clave": "lab-s15-fuente-falsa",
+      "titulo": "Actividad 4. ¿Cuál es la fuente falsa?",
+      "materia": "Laboratorio de Investigación",
+      "abierta": true
+    }
+  ]
+}
