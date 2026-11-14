@@ -1,0 +1,1492 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="robots" content="noindex,nofollow">
+<title>Lecturas en clase</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Literata:ital,opsz,wght@0,7..72,400;0,7..72,600;1,7..72,400&family=Source+Sans+3:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+/* Una sola columna de lectura, como la hoja sobre el pupitre, y arriba una barra fija que lleva
+   la cuenta de las salidas. Texto en Literata (hecha para leer en pantalla), controles en
+   Source Sans 3, y el azul tinta de los documentos de la casa como único acento.
+   Siempre fondo blanco y letra negra, aunque el celular esté en modo oscuro: lo pidió el
+   profesor para que se lea mejor. Por eso no hay paleta oscura. */
+:root {
+  color-scheme: light;
+  --papel: #ffffff;
+  --hoja: #ffffff;
+  --tinta: #000000;
+  --tenue: #414955;
+  --linea: #d3d9e1;
+  --acento: #1f4e86;
+  --acento-suave: #e4ecf6;
+  --acento-tinta: #ffffff;
+  --alerta: #875200;
+  --alerta-fondo: #fff0d4;
+  --mal: #9f241a;
+  --mal-fondo: #fce8e5;
+  --bien: #1b6a3e;
+  --bien-fondo: #e2f2e8;
+  --velo: rgba(14, 20, 28, 0.55);
+  --f-texto: 'Literata', Georgia, 'Times New Roman', serif;
+  --f-ui: 'Source Sans 3', 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+  --f-codigo: ui-monospace, 'SFMono-Regular', Menlo, Consolas, monospace;
+  --radio: 12px;
+}
+* { box-sizing: border-box; }
+body {
+  margin: 0;
+  background: var(--papel);
+  color: var(--tinta);
+  font-family: var(--f-ui);
+  font-size: 17px;
+  line-height: 1.5;
+  -webkit-user-select: none;
+  user-select: none;
+  -webkit-touch-callout: none;
+}
+input, textarea, select { -webkit-user-select: text; user-select: text; font: inherit; color: inherit; }
+
+.barra {
+  position: sticky;
+  top: env(safe-area-inset-top, 0px);
+  z-index: 10;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding-block: 10px;
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+  background: var(--hoja);
+  border-bottom: 1px solid var(--linea);
+}
+.barra .donde { font-weight: 600; font-size: 0.95rem; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.pastilla {
+  flex: none;
+  padding: 5px 12px;
+  border-radius: 999px;
+  font-size: 0.9rem;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  background: var(--acento-suave);
+  color: var(--acento);
+}
+.lado { flex: none; display: flex; align-items: center; gap: 8px; }
+.reinicio {
+  min-height: 36px;
+  padding: 5px 12px;
+  border-radius: 999px;
+  border: 1px solid var(--linea);
+  background: var(--hoja);
+  color: var(--acento);
+  font-size: 0.88rem;
+}
+.pastilla.alerta { background: var(--alerta-fondo); color: var(--alerta); }
+.pastilla.mal { background: var(--mal-fondo); color: var(--mal); }
+
+main {
+  max-width: 40rem;
+  margin: 0 auto;
+  padding-block: 20px 56px;
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+  display: grid;
+  gap: 18px;
+}
+
+.ceja {
+  margin: 0;
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--tenue);
+}
+h1, h2 { margin: 0; text-wrap: balance; line-height: 1.2; }
+h1 { font-family: var(--f-texto); font-weight: 600; font-size: 1.65rem; }
+h2 { font-family: var(--f-texto); font-weight: 600; font-size: 1.35rem; }
+p { margin: 0; }
+
+.portada { display: grid; gap: 10px; padding-top: 4px; }
+.portada .fuente { color: var(--tenue); font-size: 0.95rem; }
+.datos { display: flex; flex-wrap: wrap; gap: 8px; }
+.dato {
+  padding: 4px 10px;
+  border: 1px solid var(--linea);
+  border-radius: 999px;
+  font-size: 0.88rem;
+  color: var(--tenue);
+  font-variant-numeric: tabular-nums;
+}
+
+.tarjeta {
+  background: var(--hoja);
+  border: 1px solid var(--linea);
+  border-radius: var(--radio);
+  padding: 18px;
+  display: grid;
+  gap: 12px;
+  min-width: 0;
+}
+.reglas ul { margin: 0; padding-left: 1.1rem; display: grid; gap: 10px; }
+.reglas li::marker { color: var(--acento); }
+.consejo {
+  padding: 10px 12px;
+  border-radius: 8px;
+  background: var(--alerta-fondo);
+  color: var(--alerta);
+  font-size: 0.93rem;
+}
+
+form { display: grid; gap: 8px; }
+label.campo { font-weight: 600; font-size: 0.95rem; margin-top: 6px; }
+input[type="text"], select, textarea {
+  width: 100%;
+  padding: 12px;
+  border: 1px solid var(--linea);
+  border-radius: 10px;
+  background: var(--hoja);
+  font-size: 1rem;
+}
+textarea { min-height: 9rem; resize: vertical; line-height: 1.5; }
+.nota-campo { font-size: 0.88rem; color: var(--tenue); }
+
+button {
+  font: inherit;
+  cursor: pointer;
+  border-radius: 10px;
+  min-height: 48px;
+  padding: 12px 18px;
+  font-weight: 700;
+  font-size: 1rem;
+}
+.primario { background: var(--acento); color: var(--acento-tinta); border: 1px solid var(--acento); }
+.secundario { background: transparent; color: var(--acento); border: 1px solid var(--linea); }
+button:disabled { opacity: 0.55; cursor: default; }
+button:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-visible, .opcion:focus-within, a:focus-visible {
+  outline: 3px solid var(--acento);
+  outline-offset: 2px;
+}
+.acciones { display: flex; flex-wrap: wrap; gap: 10px; }
+.acciones > button { flex: 1 1 12rem; }
+.volver { justify-self: start; }
+
+.error {
+  padding: 10px 12px;
+  border-radius: 8px;
+  background: var(--mal-fondo);
+  color: var(--mal);
+  font-weight: 600;
+}
+
+.leer {
+  background: var(--hoja);
+  border: 1px solid var(--linea);
+  border-radius: var(--radio);
+  padding: 20px 18px;
+  font-family: var(--f-texto);
+  font-size: 1.08rem;
+  line-height: 1.72;
+  display: grid;
+  gap: 0.95em;
+  min-width: 0;
+}
+.leer h3 {
+  margin: 0.4em 0 -0.2em;
+  font-family: var(--f-ui);
+  font-size: 0.8rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--tenue);
+}
+.leer h3:first-child { margin-top: 0; }
+.leer .rotulo { font-weight: 600; }
+.leer ul { margin: 0; padding-left: 1.2rem; display: grid; gap: 0.4em; }
+.leer .num { padding-left: 1.2rem; }
+.leer .nota {
+  font-family: var(--f-ui);
+  font-size: 0.95rem;
+  line-height: 1.5;
+  padding: 10px 12px;
+  border-left: 3px solid var(--acento);
+  background: var(--acento-suave);
+  border-radius: 0 8px 8px 0;
+}
+.leer .nota b { display: block; font-size: 0.78rem; letter-spacing: 0.06em; text-transform: uppercase; color: var(--acento); }
+
+.preguntas { list-style: none; margin: 0; padding: 0; display: grid; gap: 14px; }
+.pregunta {
+  background: var(--hoja);
+  border: 1px solid var(--linea);
+  border-radius: var(--radio);
+  padding: 16px;
+  display: grid;
+  gap: 12px;
+  min-width: 0;
+}
+.pregunta.falta { border-color: var(--mal); box-shadow: 0 0 0 1px var(--mal); }
+.enunciado { font-weight: 600; line-height: 1.45; }
+.enunciado .n { color: var(--acento); font-variant-numeric: tabular-nums; margin-right: 0.3em; }
+.opciones { display: grid; gap: 8px; }
+.opcion {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 12px;
+  border: 1px solid var(--linea);
+  border-radius: 10px;
+  cursor: pointer;
+  min-height: 48px;
+  line-height: 1.4;
+}
+.opcion input { margin: 0.2em 0 0; width: 1.15rem; height: 1.15rem; flex: none; accent-color: var(--acento); }
+.opcion .letra { font-weight: 700; color: var(--tenue); flex: none; }
+.opcion.elegida { border-color: var(--acento); background: var(--acento-suave); }
+.faltan { color: var(--mal); font-weight: 600; }
+
+.resumen { list-style: none; margin: 0; padding: 0; display: grid; gap: 10px; }
+.resumen li {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 12px 14px;
+  background: var(--hoja);
+  border: 1px solid var(--linea);
+  border-radius: 10px;
+}
+.resumen .cuenta { font-variant-numeric: tabular-nums; color: var(--tenue); font-size: 0.93rem; }
+.resumen .cuenta.completa { color: var(--bien); font-weight: 600; }
+.resumen button { min-height: 40px; padding: 8px 14px; flex: none; }
+.confirmar { border: 2px solid var(--acento); }
+
+.constancia { gap: 16px; border-width: 2px; border-color: var(--acento); }
+.sello {
+  justify-self: start;
+  padding: 4px 12px;
+  border-radius: 999px;
+  background: var(--bien-fondo);
+  color: var(--bien);
+  font-weight: 700;
+  font-size: 0.85rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+.sello.prueba { background: var(--alerta-fondo); color: var(--alerta); }
+.constancia dl { margin: 0; display: grid; grid-template-columns: auto 1fr; gap: 8px 16px; }
+.constancia dt { color: var(--tenue); font-size: 0.93rem; }
+.constancia dd { margin: 0; font-weight: 600; min-width: 0; overflow-wrap: anywhere; font-variant-numeric: tabular-nums; }
+.calificacion { display: flex; align-items: baseline; gap: 12px; flex-wrap: wrap; padding-top: 12px; border-top: 1px solid var(--linea); }
+.calificacion .grande { font-family: var(--f-texto); font-size: 3.2rem; font-weight: 600; line-height: 1; font-variant-numeric: tabular-nums; }
+.calificacion .detalle { color: var(--tenue); font-size: 0.95rem; }
+.codigo { font-family: var(--f-codigo); letter-spacing: 0.18em; font-size: 1.1rem; }
+.instruccion { padding: 12px; border-radius: 8px; background: var(--acento-suave); }
+.abierta { display: grid; gap: 4px; padding-top: 10px; border-top: 1px solid var(--linea); }
+.intentos { display: grid; gap: 8px; padding-top: 12px; border-top: 1px solid var(--linea); }
+.intentos ol { margin: 0; padding-left: 1.2rem; display: grid; gap: 6px; font-variant-numeric: tabular-nums; }
+.intentos .codigo { font-size: 0.95rem; letter-spacing: 0.12em; }
+.intentos .cuenta { font-weight: 700; }
+.rehacer { display: grid; gap: 10px; }
+.abierta p:last-child { overflow-wrap: anywhere; }
+
+.velo {
+  position: fixed;
+  inset: 0;
+  z-index: 20;
+  display: grid;
+  place-items: center;
+  padding: max(16px, env(safe-area-inset-top, 0px)) max(16px, env(safe-area-inset-right, 0px)) max(16px, env(safe-area-inset-bottom, 0px)) max(16px, env(safe-area-inset-left, 0px));
+  background: var(--velo);
+}
+.velo .tarjeta { max-width: 26rem; width: 100%; border-color: var(--alerta); }
+.cubierta {
+  position: fixed;
+  inset: 0;
+  z-index: 30;
+  display: grid;
+  place-items: center;
+  padding: max(16px, env(safe-area-inset-top, 0px)) max(16px, env(safe-area-inset-right, 0px)) max(16px, env(safe-area-inset-bottom, 0px)) max(16px, env(safe-area-inset-left, 0px));
+  background: var(--papel);
+  overflow: auto;
+}
+.cubierta .tarjeta { max-width: 26rem; width: 100%; border: 2px solid var(--mal); }
+#cubierta-audio { z-index: 31; }
+.velo h2 { font-size: 1.25rem; }
+
+.centro { text-align: center; color: var(--tenue); padding: 40px 0; }
+.lista { list-style: none; margin: 0; padding: 0; display: grid; gap: 10px; }
+.lista a {
+  display: block;
+  padding: 14px 16px;
+  background: var(--hoja);
+  border: 1px solid var(--linea);
+  border-radius: 10px;
+  color: var(--tinta);
+  text-decoration: none;
+  font-weight: 600;
+}
+.lista a span { display: block; color: var(--tenue); font-size: 0.9rem; font-weight: 400; }
+.materia { display: grid; gap: 10px; padding-top: 16px; border-top: 2px solid var(--acento); }
+.materia h2 {
+  font-family: var(--f-ui);
+  font-size: 0.85rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--acento);
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .velo .tarjeta { animation: entra 160ms ease-out; }
+  @keyframes entra { from { transform: translateY(8px); opacity: 0.6; } to { transform: none; opacity: 1; } }
+}
+</style>
+</head>
+<body>
+<header class="barra" id="barra" hidden>
+  <span class="donde" id="donde"></span>
+  <span class="lado">
+    <span class="pastilla" id="pastilla" aria-live="polite"></span>
+    <button class="reinicio" id="reinicio" type="button" hidden>Reiniciar</button>
+  </span>
+</header>
+<main id="app"><p class="centro">Cargando la lectura…</p></main>
+<div class="velo" id="velo" hidden role="alertdialog" aria-modal="true" aria-labelledby="velo-titulo">
+  <div class="tarjeta">
+    <h2 id="velo-titulo">Saliste de la lectura</h2>
+    <p id="velo-texto"></p>
+    <button class="primario" id="velo-boton" type="button">Seguir con la lectura</button>
+  </div>
+</div>
+<div class="cubierta" id="cubierta" hidden role="alertdialog" aria-modal="true" aria-labelledby="cubierta-titulo">
+  <div class="tarjeta">
+    <h2 id="cubierta-titulo">Pantalla dividida</h2>
+    <p id="cubierta-texto">Vuelve a pantalla completa para seguir con la lectura.</p>
+    <p class="consejo" id="cubierta-nota">Esto cuenta como una salida.</p>
+  </div>
+</div>
+<div class="cubierta" id="cubierta-audio" hidden role="alertdialog" aria-modal="true" aria-labelledby="audio-titulo">
+  <div class="tarjeta">
+    <h2 id="audio-titulo">Quítate los audífonos</h2>
+    <p id="audio-texto"></p>
+    <p class="consejo">Esto no cuenta como salida.</p>
+    <button class="primario" id="audio-boton" type="button" hidden>Permitir el micrófono</button>
+  </div>
+</div>
+<div class="velo" id="velo-reinicio" hidden role="alertdialog" aria-modal="true" aria-labelledby="reinicio-titulo">
+  <div class="tarjeta">
+    <h2 id="reinicio-titulo">¿Reiniciar el cuestionario?</h2>
+    <p id="reinicio-texto"></p>
+    <div class="acciones">
+      <button class="secundario" id="reinicio-no" type="button">Seguir con este intento</button>
+      <button class="primario" id="reinicio-si" type="button">Sí, reiniciar</button>
+    </div>
+  </div>
+</div>
+
+<script>
+/*
+ * Lecturas en clase. Cada lectura es un archivo lecturas/<clave>.json publicado junto a esta
+ * página; lecturas/indice.json dice cuáles están abiertas. El enlace de una lectura es el de
+ * la app con #<clave> al final. La clave de respuestas va cifrada (huella SHA-256 de la opción
+ * correcta), la calificación se calcula aquí y la constancia lleva un código de verificación.
+ * Las piezas que generan los archivos están en .claude/tools/lecturas_app.py.
+ */
+(function () {
+  'use strict';
+
+  var SAL = 'IJM-lecturas-2026';
+  var ZONA = 'America/Mexico_City';
+  var ACTIVAS = ['texto', 'preguntas', 'cierre', 'revisar'];
+  var app = document.getElementById('app');
+
+  var L = null;          // la lectura abierta
+  var PREG = [];         // todas sus preguntas en una fila
+  var NB = 0;            // número de partes
+  var CIERRE = [];       // preguntas abiertas
+  var LOCAL = '';        // llave del guardado en el celular
+  var S = null;          // estado del alumno
+  var INDICE = null;     // lecturas/indice.json
+  var almacenOk = probarAlmacen();
+
+  function lleno(n, v) { var x = []; for (var i = 0; i < n; i++) x.push(v); return x; }
+
+  function estadoNuevo() {
+    return {
+      vista: 'inicio', b: 0, intento: null, nombre: '', grupo: '', salidas: 0,
+      inicio: null, r: PREG.map(function () { return null; }),
+      a: CIERRE.map(function () { return ''; }), g: lleno(NB, 0), leido: lleno(NB, false),
+      orden: null, constancia: null, avisoPendiente: false, error: '', confirmar: false,
+      historial: [], numero: 1, confirmarRehacer: false, audifonos: 0
+    };
+  }
+  function maxIntentos() { return Math.max(1, Number(L && L.intentos) || 1); }
+  function cuentaLaMejor() { return !L || L.cuenta !== 'ultimo'; }
+
+  // ── Guardado en el celular ────────────────────────────────────────────────
+  function probarAlmacen() {
+    try { localStorage.setItem('lecturas-prueba', '1'); localStorage.removeItem('lecturas-prueba'); return true; }
+    catch (e) { return false; }
+  }
+  function guardarLocal() {
+    if (!S || !LOCAL) return;
+    try {
+      localStorage.setItem(LOCAL, JSON.stringify({
+        version: L.version || '', intento: S.intento, nombre: S.nombre, grupo: S.grupo,
+        salidas: S.salidas, inicio: S.inicio, r: S.r, a: S.a, g: S.g, leido: S.leido, b: S.b,
+        vista: S.vista, orden: S.orden, constancia: S.constancia, avisoPendiente: S.avisoPendiente,
+        historial: S.historial, numero: S.numero, audifonos: S.audifonos
+      }));
+    } catch (e) { }
+  }
+  function cargarLocal() {
+    try { return JSON.parse(localStorage.getItem(LOCAL) || 'null'); } catch (e) { return null; }
+  }
+
+  // ── Huellas ───────────────────────────────────────────────────────────────
+  function sha(txt) {
+    return crypto.subtle.digest('SHA-256', new TextEncoder().encode(txt)).then(function (buf) {
+      return Array.prototype.map.call(new Uint8Array(buf), function (x) {
+        return ('0' + x.toString(16)).slice(-2);
+      }).join('');
+    });
+  }
+  function normalizar(s) {
+    return String(s || '').normalize('NFD').replace(/[̀-ͯ]/g, '')
+      .toLowerCase().replace(/\s+/g, ' ').trim();
+  }
+  function hora(fecha) {
+    try {
+      return new Intl.DateTimeFormat('es-MX', {
+        timeZone: ZONA, day: '2-digit', month: '2-digit', year: 'numeric',
+        hour: '2-digit', minute: '2-digit', hour12: false
+      }).format(fecha).replace(',', '');
+    } catch (e) { return fecha.toLocaleString(); }
+  }
+
+  // ── Orden de opciones distinto para cada intento ──────────────────────────
+  function hash32(s) {
+    var h = 2166136261;
+    for (var i = 0; i < s.length; i++) { h ^= s.charCodeAt(i); h = Math.imul(h, 16777619); }
+    return h >>> 0;
+  }
+  function azar(semilla) {
+    return function () {
+      semilla = (semilla + 0x6D2B79F5) | 0;
+      var t = Math.imul(semilla ^ (semilla >>> 15), 1 | semilla);
+      t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;
+      return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+    };
+  }
+  function ordenPara(intento) {
+    return PREG.map(function (p) {
+      var f = azar(hash32(intento + ':' + p.n));
+      var idx = p.ops.map(function (x, k) { return k; });
+      for (var j = idx.length - 1; j > 0; j--) {
+        var k = Math.floor(f() * (j + 1));
+        var t = idx[j]; idx[j] = idx[k]; idx[k] = t;
+      }
+      return idx;
+    });
+  }
+
+  // ── Salidas de la pestaña ─────────────────────────────────────────────────
+  function pen() {
+    var p = (L && L.penalizacion) || {};
+    return { cada: Number(p.cada === undefined ? 3 : p.cada), resta: Number(p.resta === undefined ? 1 : p.resta) };
+  }
+  function menos(s) { var p = pen(); return p.cada > 0 ? Math.floor(s / p.cada) * p.resta : 0; }
+  function puntos(n) { return n === 1 ? '1 punto' : n + ' puntos'; }
+  function veces(n) { return n === 1 ? '1 salida' : n + ' salidas'; }
+  function activo() { return !!(S && S.intento) && ACTIVAS.indexOf(S.vista) >= 0; }
+
+  var oculto = false;
+  document.addEventListener('visibilitychange', function () {
+    if (document.visibilityState === 'hidden') {
+      if (!activo() || oculto) return;
+      oculto = true;
+      S.salidas++;
+      S.avisoPendiente = true;
+      guardarLocal();
+    } else {
+      if (!oculto) return;
+      oculto = false;
+      mantenerPantalla();
+      if (S.avisoPendiente && activo()) mostrarAviso();
+      pintarBarra();
+    }
+  });
+
+  function mostrarAviso() {
+    S.avisoPendiente = false;
+    guardarLocal();
+    var p = pen();
+    var s = S.salidas;
+    var texto = 'Llevas ' + veces(s) + '. ';
+    if (p.cada > 0) {
+      var ya = menos(s);
+      var sig = (Math.floor(s / p.cada) + 1) * p.cada;
+      texto += ya > 0
+        ? 'Ya se te ' + (ya === 1 ? 'resta ' : 'restan ') + puntos(ya) + '. Con ' + sig + ' salidas serán ' + puntos(menos(sig)) + '.'
+        : 'Cuando llegues a ' + p.cada + ', se te resta ' + puntos(p.resta) + '.';
+    }
+    texto += ' Cambiar de app o de pestaña, usar otra app con la lectura en ventana flotante o pantalla dividida, recargar la página o dejar que se apague la pantalla cuentan como salida.';
+    document.getElementById('velo-texto').textContent = texto;
+    document.getElementById('velo').hidden = false;
+    document.getElementById('velo-boton').focus();
+  }
+  document.getElementById('velo-boton').addEventListener('click', function () {
+    document.getElementById('velo').hidden = true;
+  });
+
+  // ── Pantalla dividida o ventana flotante ──────────────────────────────────
+  // Ninguna página web puede impedirla ni saber con certeza que ocurre, pero la ventana se
+  // encoge. En celular o tableta, mientras leen o contestan (vistas sin campos de texto, para
+  // no confundirla con el teclado), si el área baja del 60 % de la mayor que ha tenido o del
+  // 40 % de la pantalla, se tapa el contenido y se cuenta una salida por cada vez.
+  var reducida = false;
+  var areaMayor = 0;
+  var tVentana = null;
+  var VIGILADAS = ['texto', 'preguntas', 'revisar'];
+  function esTactil() {
+    try {
+      return window.matchMedia('(pointer: coarse)').matches && Math.min(screen.width, screen.height) < 1100;
+    } catch (e) { return false; }
+  }
+  function revisarVentana() {
+    var area = window.innerWidth * window.innerHeight;
+    if (area > areaMayor) areaMayor = area;
+    var vigilar = activo() && VIGILADAS.indexOf(S.vista) >= 0 && esTactil();
+    if (!vigilar) { if (reducida) quitarCubierta(); return; }
+    var pantalla = (screen.width || 0) * (screen.height || 0);
+    var chica = area < 0.6 * areaMayor || (pantalla > 0 && area < 0.4 * pantalla);
+    if (chica && !reducida) {
+      reducida = true;
+      S.salidas++;
+      S.avisoPendiente = true;
+      guardarLocal();
+      pintarBarra();
+      mostrarCubierta('dividida');
+    } else if (!chica && reducida) {
+      quitarCubierta();
+      if (S.avisoPendiente && activo() && !fueraPorFoco) mostrarAviso();
+    }
+  }
+  function quitarCubierta() {
+    reducida = false;
+    if (!fueraPorFoco) document.getElementById('cubierta').hidden = true;
+  }
+  function mostrarCubierta(tipo) {
+    var dividida = tipo === 'dividida';
+    document.getElementById('cubierta-titulo').textContent = dividida ? 'Pantalla dividida' : 'Saliste de la lectura';
+    document.getElementById('cubierta-texto').textContent = dividida
+      ? 'Vuelve a pantalla completa para seguir con la lectura. Mientras la pantalla esté dividida o en una ventana chica, el texto y las preguntas no se ven.'
+      : 'Estás usando otra app o ventana mientras la lectura sigue abierta (ventana flotante, miniatura o pantalla dividida). Toca aquí para seguir con la lectura.';
+    document.getElementById('cubierta-nota').textContent = 'Esto cuenta como una salida.';
+    document.getElementById('cubierta').hidden = false;
+  }
+
+  // ── Usar otra app con la lectura todavía a la vista ───────────────────────
+  // En ventana flotante, miniatura, pantalla dividida u otra app encima, muchos celulares no
+  // cambian el tamaño que ve la página ni la ocultan, pero la lectura pierde el foco cuando
+  // tocan la otra app. Si sigue visible y sin foco más de 2 s, cuenta una salida y se tapa.
+  // Sólo se vigila después de que el alumno tocó la página al menos una vez (al recargar,
+  // la página arranca sin foco hasta el primer toque).
+  var vistoFoco = false;
+  var fueraPorFoco = false;
+  var sinFoco = 0;
+  var tFoco = null;
+  var VIGILADAS_FOCO = ['texto', 'preguntas', 'cierre', 'revisar'];
+  ['pointerdown', 'touchstart', 'keydown'].forEach(function (ev) {
+    window.addEventListener(ev, function () { vistoFoco = true; }, true);
+  });
+  function tieneFoco() {
+    try { return document.hasFocus(); } catch (e) { return true; }
+  }
+  function revisarFoco() {
+    if (!vistoFoco || fueraPorFoco || !activo() || VIGILADAS_FOCO.indexOf(S.vista) < 0) return;
+    if (document.visibilityState !== 'visible') return;   // eso ya lo cuenta la salida normal
+    if (tieneFoco()) return;
+    fueraPorFoco = true;
+    S.salidas++;
+    S.avisoPendiente = true;
+    guardarLocal();
+    pintarBarra();
+    mostrarCubierta('foco');
+  }
+  function volverDelFoco() {
+    clearTimeout(tFoco);
+    sinFoco = 0;
+    if (!fueraPorFoco) return;
+    fueraPorFoco = false;
+    if (reducida) { mostrarCubierta('dividida'); return; }
+    document.getElementById('cubierta').hidden = true;
+    if (S.avisoPendiente && activo()) mostrarAviso();
+  }
+  window.addEventListener('blur', function () {
+    clearTimeout(tFoco);
+    tFoco = setTimeout(revisarFoco, 2000);
+  });
+  window.addEventListener('focus', function () { vistoFoco = true; volverDelFoco(); });
+  document.getElementById('cubierta').addEventListener('click', function () {
+    pantallaCompleta();
+    if (fueraPorFoco) volverDelFoco();
+  });
+  window.addEventListener('resize', function () {
+    clearTimeout(tVentana);
+    tVentana = setTimeout(revisarVentana, 700);
+  });
+  // Por si el navegador cambia el tamaño sin avisar: una revisión ligera cada 1.5 s.
+  // Lo mismo con el foco, por si el navegador no avisa del blur: dos revisiones seguidas sin foco.
+  setInterval(function () {
+    if (!S) return;
+    revisarVentana();
+    if (document.visibilityState === 'visible' && vistoFoco && !tieneFoco()) {
+      sinFoco++;
+      if (sinFoco >= 2) revisarFoco();
+    } else if (tieneFoco()) {
+      if (fueraPorFoco) volverDelFoco();
+      sinFoco = 0;
+    }
+  }, 1500);
+
+  var bloqueo = null;
+  function mantenerPantalla() {
+    try {
+      if ('wakeLock' in navigator && !bloqueo && document.visibilityState === 'visible') {
+        navigator.wakeLock.request('screen').then(function (l) {
+          bloqueo = l;
+          l.addEventListener('release', function () { bloqueo = null; });
+        }).catch(function () { });
+      }
+    } catch (e) { }
+  }
+
+
+  // ── Audífonos ─────────────────────────────────────────────────────────────
+  // Con el permiso del micrófono, el navegador dice el nombre de cada dispositivo de audio. Si
+  // aparece uno de Bluetooth, de cable o USB, se tapa la lectura hasta que lo desconecten. No
+  // cuenta como salida. El micrófono se abre y se cierra al instante: no se graba nada.
+  // "Headset earpiece" es el auricular del propio teléfono: siempre aparece y no cuenta.
+  var conAudifonos = false;
+  var tAudio = null;
+  var AUDIFONOS = /bluetooth|wired|usb|airpods|buds|headphone|aud[ií]fono|auricular|hands-?free|manos libres/i;
+  function esAudifono(d) {
+    var n = d.label || '';
+    if (/headset earpiece/i.test(n)) return false;
+    return AUDIFONOS.test(n);
+  }
+  function pedirMicrofono() {
+    var md = navigator.mediaDevices;
+    if (!md || !md.getUserMedia) return Promise.reject(new Error('sin-micro'));
+    return md.getUserMedia({ audio: true }).then(function (s) {
+      s.getTracks().forEach(function (t) { t.stop(); });
+      return true;
+    });
+  }
+  function revisarAudifonos() {
+    var md = navigator.mediaDevices;
+    if (!md || !md.enumerateDevices) return;
+    md.enumerateDevices().then(function (lista) {
+      if (!activo()) { ponerAudio(false, false); return; }
+      var conNombre = lista.some(function (d) { return !!d.label; });
+      if (!conNombre) { ponerAudio(true, true); return; }   // perdió el permiso: hay que volver a darlo
+      ponerAudio(lista.some(esAudifono), false);
+    }).catch(function () { });
+  }
+  function ponerAudio(tapar, faltaPermiso) {
+    var c = document.getElementById('cubierta-audio');
+    if (!tapar) { conAudifonos = false; c.hidden = true; return; }
+    document.getElementById('audio-titulo').textContent = faltaPermiso ? 'Vuelve a permitir el micrófono' : 'Quítate los audífonos';
+    document.getElementById('audio-texto').textContent = faltaPermiso
+      ? 'Para seguir con la lectura, permite el micrófono otra vez. No se graba nada: sólo sirve para saber si hay audífonos conectados.'
+      : 'Hay audífonos conectados a tu celular. Mientras sigan conectados, el texto y las preguntas no se ven. Desconéctalos (o apaga el Bluetooth) y la lectura vuelve sola.';
+    document.getElementById('audio-boton').hidden = !faltaPermiso;
+    if (!faltaPermiso && !conAudifonos && S) { S.audifonos = (S.audifonos || 0) + 1; guardarLocal(); }
+    conAudifonos = !faltaPermiso;
+    c.hidden = false;
+  }
+  document.getElementById('audio-boton').addEventListener('click', function () {
+    pedirMicrofono().then(revisarAudifonos).catch(function () {
+      document.getElementById('audio-texto').textContent =
+        'El navegador no dejó usar el micrófono. Toca el candado junto a la dirección de la página, permite el micrófono y vuelve a tocar el botón.';
+    });
+  });
+  if (navigator.mediaDevices && navigator.mediaDevices.addEventListener) {
+    navigator.mediaDevices.addEventListener('devicechange', function () {
+      clearTimeout(tAudio); tAudio = setTimeout(revisarAudifonos, 300);
+    });
+  }
+  setInterval(function () { if (S) revisarAudifonos(); }, 3000);
+
+  // ── Pantalla completa ─────────────────────────────────────────────────────
+  // En Android oculta la barra del navegador mientras leen. Si el navegador no la permite, no pasa nada.
+  function pantallaCompleta() {
+    try {
+      var d = document.documentElement;
+      if (document.fullscreenElement || document.webkitFullscreenElement) return;
+      var f = d.requestFullscreen || d.webkitRequestFullscreen;
+      if (!f) return;
+      var p = f.call(d, { navigationUI: 'hide' });
+      if (p && p.catch) p.catch(function () { });
+    } catch (e) { }
+  }
+
+  // ── Resultados a la hoja del profesor ─────────────────────────────────────
+  // Cada inicio, reinicio y envío se manda a una hoja de Google (Apps Script). Si no hay internet,
+  // queda en una cola en el celular y se reintenta cada 15 s, al volver la conexión o al reabrir.
+  var HOJA = 'https://script.google.com/macros/s/AKfycbzQBBXfYcY17vJRX8UpI8YfxiKAaUd1DhKMauQ1Pd8AT7F568xJpRWe8kUAg9o938GU/exec';
+  var COLA = 'lecturas-app:cola';
+  function idNuevo() { return Date.now().toString(36) + Math.random().toString(36).slice(2, 8); }
+  function leerCola() { try { return JSON.parse(localStorage.getItem(COLA) || '[]'); } catch (e) { return []; } }
+  function guardarCola(c) { try { localStorage.setItem(COLA, JSON.stringify(c.slice(-50))); } catch (e) { } }
+  function registrar(evento, extra) {
+    if (!L || !S) return '';
+    var d = {
+      id: idNuevo(), evento: evento, prueba: PRUEBA, clave: L.clave, titulo: L.titulo, materia: L.materia || '',
+      nombre: S.nombre, grupo: S.grupo, numero: S.numero || 1, intento: S.intento,
+      salidas: S.salidas, audifonos: S.audifonos || 0,
+      inicio: S.inicio ? hora(new Date(S.inicio)) : '', navegador: navigator.userAgent
+    };
+    Object.keys(extra || {}).forEach(function (k) { d[k] = extra[k]; });
+    var c = leerCola(); c.push(d); guardarCola(c);
+    setTimeout(enviarPendientes, 0);
+    return d.id;
+  }
+  var enviando = false;
+  function enviarPendientes() {
+    if (enviando || HOJA.indexOf('https://') !== 0) return;
+    var c = leerCola();
+    if (!c.length) return;
+    enviando = true;
+    var d = c[0];
+    fetch(HOJA, { method: 'POST', body: JSON.stringify(d), headers: { 'Content-Type': 'text/plain;charset=utf-8' } })
+      .then(function (r) { return r.json(); })
+      .then(function (res) {
+        if (!res || !res.ok) throw new Error('hoja');
+        var resto = leerCola().filter(function (x) { return x.id !== d.id; });
+        guardarCola(resto);
+        enviando = false;
+        if (S && S.constancia && S.constancia.envioId === d.id) {
+          S.constancia.guardada = true;
+          (S.historial || []).forEach(function (x) { if (x.envioId === d.id) x.guardada = true; });
+          guardarLocal();
+          if (S.vista === 'constancia') pintar();
+        }
+        if (resto.length) enviarPendientes();
+      })
+      .catch(function () { enviando = false; setTimeout(enviarPendientes, 15000); });
+  }
+  window.addEventListener('online', enviarPendientes);
+
+  // ── Que no se pueda copiar ────────────────────────────────────────────────
+  function esCampo(t) { return t && /^(INPUT|TEXTAREA|SELECT)$/.test(t.tagName); }
+  ['copy', 'cut', 'contextmenu', 'selectstart', 'dragstart'].forEach(function (ev) {
+    document.addEventListener(ev, function (e) { if (!esCampo(e.target)) e.preventDefault(); }, true);
+  });
+  function sinPegar(campo, aviso) {
+    function no(e) { e.preventDefault(); aviso.hidden = false; }
+    campo.addEventListener('paste', no);
+    campo.addEventListener('drop', no);
+    campo.addEventListener('beforeinput', function (e) {
+      if (e.inputType === 'insertFromPaste' || e.inputType === 'insertFromDrop' ||
+          (e.inputType === 'insertReplacementText' && (e.data || '').length > 40)) no(e);
+    });
+  }
+
+  // ── Construcción de elementos ─────────────────────────────────────────────
+  function el(tag, attrs, hijos) {
+    var n = document.createElement(tag);
+    if (attrs) Object.keys(attrs).forEach(function (k) {
+      var v = attrs[k];
+      if (v === null || v === undefined || v === false) return;
+      if (k === 'class') n.className = v;
+      else if (k === 'text') n.textContent = v;
+      else if (k.slice(0, 2) === 'on') n.addEventListener(k.slice(2), v);
+      else n.setAttribute(k, v === true ? '' : v);
+    });
+    (hijos || []).forEach(function (h) {
+      if (h === null || h === undefined || h === false) return;
+      n.appendChild(typeof h === 'string' ? document.createTextNode(h) : h);
+    });
+    return n;
+  }
+  function boton(texto, clase, fn) {
+    return el('button', { type: 'button', class: clase, onclick: fn }, [texto]);
+  }
+  function frag(hijos) {
+    var f = document.createDocumentFragment();
+    hijos.forEach(function (h) { if (h) f.appendChild(h); });
+    return f;
+  }
+
+  // ── Pintar ────────────────────────────────────────────────────────────────
+  function ir(vista) {
+    S.vista = vista;
+    S.error = '';
+    S.confirmar = false;
+    S.confirmarRehacer = false;
+    guardarLocal();
+    pintar();
+    window.scrollTo(0, 0);
+  }
+
+  function pintarBarra() {
+    var barra = document.getElementById('barra');
+    var ver = activo();
+    barra.hidden = !ver;
+    if (!ver) return;
+    var donde = '';
+    if (S.vista === 'texto') donde = 'Parte ' + (S.b + 1) + ' de ' + NB + ' · Texto';
+    else if (S.vista === 'preguntas') donde = 'Parte ' + (S.b + 1) + ' de ' + NB + ' · Preguntas';
+    else if (S.vista === 'cierre') donde = 'Para terminar';
+    else if (S.vista === 'revisar') donde = 'Revisión';
+    if ((S.numero || 1) > 1) donde = 'Intento ' + S.numero + ' · ' + donde;
+    document.getElementById('donde').textContent = donde;
+    var past = document.getElementById('pastilla');
+    var m = menos(S.salidas);
+    past.textContent = 'Salidas: ' + S.salidas + (m > 0 ? ' · −' + puntos(m) : '');
+    past.className = 'pastilla' + (m > 0 ? ' mal' : (S.salidas > 0 ? ' alerta' : ''));
+    document.getElementById('reinicio').hidden = !puedeReiniciar();
+  }
+
+  // Reiniciar a media lectura (por ejemplo, si se salió mucho o no entendió la dinámica).
+  // El intento que se deja no se califica y el reinicio usa el intento que quedaba.
+  function puedeReiniciar() {
+    return activo() && maxIntentos() - ((S.historial || []).length + 1) > 0;
+  }
+  document.getElementById('reinicio').addEventListener('click', function () {
+    var quedan = maxIntentos() - ((S.historial || []).length + 1);
+    document.getElementById('reinicio-texto').textContent =
+      'Empiezas de cero, con las salidas en 0 y las opciones en otro orden. Este intento no se califica y el reinicio ' +
+      (quedan === 1 ? 'usa tu segundo intento: después ya no podrás rehacerlo.' : 'usa uno de tus intentos.');
+    document.getElementById('velo-reinicio').hidden = false;
+    document.getElementById('reinicio-no').focus();
+  });
+  document.getElementById('reinicio-no').addEventListener('click', function () {
+    document.getElementById('velo-reinicio').hidden = true;
+  });
+  document.getElementById('reinicio-si').addEventListener('click', function () {
+    document.getElementById('velo-reinicio').hidden = true;
+    if (!puedeReiniciar()) return;
+    S.historial = (S.historial || []).concat([{
+      numero: S.numero || 1, reiniciado: true, salidas: S.salidas,
+      inicio: S.inicio ? hora(new Date(S.inicio)) : '', fin: hora(new Date()),
+      contestadas: S.r.filter(function (x) { return x !== null; }).length, reactivos: PREG.length
+    }]);
+    registrar('reinicio', { contestadas: S.r.filter(function (x) { return x !== null; }).length, reactivos: PREG.length });
+    rehacer();
+  });
+
+  function pintar() {
+    app.textContent = '';
+    var v = S.vista;
+    var nodo;
+    if (v === 'inicio') nodo = vistaInicio();
+    else if (v === 'texto') nodo = vistaTexto();
+    else if (v === 'preguntas') nodo = vistaPreguntas();
+    else if (v === 'cierre') nodo = vistaCierre();
+    else if (v === 'revisar') nodo = vistaRevisar();
+    else if (v === 'enviando') nodo = el('p', { class: 'centro', text: 'Calificando…' });
+    else if (v === 'constancia') nodo = vistaConstancia();
+    else if (v === 'cerrada') nodo = vistaMensaje(L.titulo, L.materia, 'Esta lectura está cerrada y ya no acepta respuestas.');
+    else if (v === 'todavia') nodo = vistaMensaje(L.titulo, L.materia, 'Esta lectura todavía no abre. Abre el ' + S.abre + '.');
+    else nodo = vistaMensaje('Algo salió mal', '', S.error || 'Vuelve a abrir el enlace.');
+    app.appendChild(nodo);
+    pintarBarra();
+    revisarVentana();
+  }
+
+  function vistaMensaje(titulo, ceja, texto) {
+    return el('div', { class: 'portada' }, [
+      ceja ? el('p', { class: 'ceja', text: ceja }) : null,
+      el('h1', { text: titulo }),
+      el('p', { text: texto })
+    ]);
+  }
+
+  function portada() {
+    return el('section', { class: 'portada' }, [
+      PRUEBA ? el('p', { class: 'consejo', text: 'Modo de prueba: puedes recorrerla antes de que abra. Lo que hagas aquí no cuenta.' }) : null,
+      L.materia ? el('p', { class: 'ceja', text: L.materia }) : null,
+      el('h1', { text: L.titulo }),
+      L.fuente ? el('p', { class: 'fuente', text: L.fuente }) : null,
+      el('div', { class: 'datos' }, [
+        el('span', { class: 'dato', text: NB + (NB === 1 ? ' parte' : ' partes') }),
+        el('span', { class: 'dato', text: PREG.length + ' preguntas' }),
+        CIERRE.length ? el('span', { class: 'dato', text: CIERRE.length + (CIERRE.length === 1 ? ' respuesta abierta' : ' respuestas abiertas') }) : null
+      ])
+    ]);
+  }
+
+  function vistaInicio() {
+    var p = pen();
+    var reglas = el('section', { class: 'tarjeta reglas', 'aria-labelledby': 'antes' }, [
+      el('h2', { id: 'antes', text: 'Antes de empezar' }),
+      L.descripcion ? el('p', { text: L.descripcion }) : null,
+      el('ul', null, [
+        el('li', null, [el('b', { text: 'Primero lees, luego contestas. ' }),
+          'Cada parte tiene su texto y sus preguntas. Al pasar a las preguntas el texto se oculta, pero puedes volver a él las veces que quieras.']),
+        el('li', null, [el('b', { text: 'No salgas de esta pantalla. ' }),
+          'Cambiar de app o de pestaña, usar otra app con la lectura en ventana flotante, en miniatura o en pantalla dividida, recargar la página o dejar que se apague la pantalla cuenta como salida.' +
+          (p.cada > 0 ? ' Cada ' + p.cada + ' salidas se te resta ' + puntos(p.resta) + ' de la calificación.' : '')]),
+        el('li', null, [el('b', { text: 'Sin audífonos. ' }),
+          'Al empezar, la página te pide el micrófono: no graba nada, sólo revisa si hay audífonos conectados. Mientras haya audífonos, la lectura se tapa.']),
+        el('li', null, [el('b', { text: 'El texto no se puede copiar. ' }),
+          CIERRE.length ? 'Tampoco se puede pegar en las respuestas abiertas.' : 'Contesta con lo que leíste.']),
+        maxIntentos() > 1 ? el('li', null, [el('b', { text: 'Tienes ' + maxIntentos() + ' intentos. ' }),
+          'Después de enviar puedes rehacerlo desde cero' + (cuentaLaMejor() ? '; cuenta tu calificación más alta. ' : '; cuenta el último intento. ') +
+          'Si te sales mucho o no entendiste la dinámica, el botón "Reiniciar" de arriba te deja empezar de cero, pero usa tu otro intento.']) : null,
+        el('li', null, [el('b', { text: 'Al final verás tu constancia. ' }), 'Tómale captura y súbela a Academic: esa es tu entrega.'])
+      ]),
+      el('p', { class: 'consejo', text: 'Antes de empezar, cierra las otras apps y sube el tiempo de apagado de tu pantalla a 2 minutos o más.' }),
+      almacenOk ? null : el('p', { class: 'error', text: 'Tu navegador no guarda el avance: no recargues la página hasta enviar.' })
+    ]);
+
+    var aviso = el('p', { class: 'error', role: 'alert', hidden: !S.error, text: S.error });
+    var nombre = el('input', { type: 'text', id: 'nombre', autocomplete: 'name', autocapitalize: 'words', value: S.nombre || '' });
+    var grupoCampo;
+    if (L.grupos && L.grupos.length) {
+      grupoCampo = el('select', { id: 'grupo' }, [el('option', { value: '', text: 'Elige tu grupo' })]
+        .concat(L.grupos.map(function (g) { return el('option', { value: g, text: g, selected: S.grupo === g }); })));
+    } else {
+      grupoCampo = el('input', { type: 'text', id: 'grupo', value: S.grupo || '' });
+    }
+    var form = el('form', { class: 'tarjeta', novalidate: true }, [
+      el('label', { class: 'campo', for: 'nombre', text: 'Nombre completo, empezando por apellidos' }),
+      nombre,
+      el('label', { class: 'campo', for: 'grupo', text: 'Grupo' }),
+      grupoCampo,
+      aviso,
+      el('button', { type: 'submit', class: 'primario' }, ['Empezar la lectura'])
+    ]);
+    form.addEventListener('submit', function (e) {
+      e.preventDefault();
+      var nom = nombre.value.replace(/\s+/g, ' ').trim();
+      var gru = grupoCampo.value;
+      if (nom.split(' ').length < 2 || nom.length < 6) {
+        aviso.textContent = 'Escribe tu nombre completo, empezando por apellidos.';
+        aviso.hidden = false; nombre.focus(); return;
+      }
+      if (!gru) { aviso.textContent = 'Elige tu grupo.'; aviso.hidden = false; grupoCampo.focus(); return; }
+      pantallaCompleta();
+      pedirMicrofono().then(function () {
+        S.nombre = nom;
+        S.grupo = gru;
+        S.intento = Math.random().toString(36).slice(2, 10);
+        S.inicio = Date.now();
+        S.orden = ordenPara(S.intento);
+        S.b = 0;
+        S.audifonos = 0;
+        mantenerPantalla();
+        ir('texto');
+        registrar('inicio');
+        revisarAudifonos();
+      }).catch(function () {
+        aviso.textContent = 'Para empezar tienes que permitir el micrófono. No se graba nada: sólo sirve para saber si hay audífonos conectados. Si ya lo negaste, toca el candado junto a la dirección de la página, permite el micrófono y vuelve a tocar "Empezar la lectura".';
+        aviso.hidden = false;
+      });
+    });
+    return frag([portada(), reglas, form]);
+  }
+
+  function vistaTexto() {
+    var b = L.bloques[S.b];
+    var cuerpo = el('article', { class: 'leer' });
+    var lista = null;
+    (b.texto || []).forEach(function (it) {
+      var t = it.t, x = it.x;
+      if (t !== 'b') lista = null;
+      if (t === 'h') cuerpo.appendChild(el('h3', { text: x }));
+      else if (t === 'k') cuerpo.appendChild(el('p', { class: 'rotulo', text: x }));
+      else if (t === 'n') cuerpo.appendChild(el('p', { class: 'num', text: x }));
+      else if (t === 'nota') cuerpo.appendChild(el('p', { class: 'nota' }, [el('b', { text: 'Nota del profesor' }), x]));
+      else if (t === 'b') {
+        if (!lista) { lista = el('ul'); cuerpo.appendChild(lista); }
+        lista.appendChild(el('li', { text: x }));
+      } else cuerpo.appendChild(el('p', { text: x }));
+    });
+    var ya = S.leido[S.b];
+    return frag([
+      el('div', { class: 'portada' }, [
+        el('p', { class: 'ceja', text: 'Parte ' + (S.b + 1) + ' de ' + NB }),
+        el('h2', { text: b.titulo })
+      ]),
+      cuerpo,
+      el('div', { class: 'acciones' }, [
+        boton(ya ? 'Volver a las preguntas' : 'Ya leí: ver las preguntas', 'primario', function () {
+          S.leido[S.b] = true;
+          ir('preguntas');
+        })
+      ])
+    ]);
+  }
+
+  function faltanEn(bi) {
+    return PREG.filter(function (p) { return p.b === bi && S.r[p.n] === null; });
+  }
+
+  function vistaPreguntas() {
+    var b = L.bloques[S.b];
+    var mias = PREG.filter(function (p) { return p.b === S.b; });
+    var msg = el('p', { class: 'faltan', role: 'status', hidden: true });
+    var siguienteTxt = S.b < NB - 1 ? 'Siguiente parte' : (CIERRE.length ? 'Continuar' : 'Revisar y enviar');
+
+    function actualizarFaltan() {
+      var f = faltanEn(S.b);
+      msg.hidden = f.length === 0;
+      msg.textContent = f.length === 1 ? 'Te falta 1 pregunta de esta parte.' : 'Te faltan ' + f.length + ' preguntas de esta parte.';
+      return f;
+    }
+
+    var ol = el('ol', { class: 'preguntas' });
+    mias.forEach(function (p) {
+      var orden = (S.orden && S.orden[p.n]) || p.ops.map(function (x, i) { return i; });
+      var grupo = el('div', { class: 'opciones', role: 'radiogroup', 'aria-labelledby': 'enun-' + p.n });
+      var li = el('li', { class: 'pregunta', id: 'p-' + p.n }, [
+        el('p', { class: 'enunciado', id: 'enun-' + p.n }, [el('span', { class: 'n', text: (p.n + 1) + '.' }), p.q]),
+        grupo
+      ]);
+      orden.forEach(function (orig, k) {
+        var id = 'q' + p.n + '-' + orig;
+        var input = el('input', { type: 'radio', name: 'q' + p.n, id: id, value: String(orig), checked: S.r[p.n] === orig });
+        var etiqueta = el('label', { class: 'opcion' + (S.r[p.n] === orig ? ' elegida' : ''), for: id }, [
+          input, el('span', { class: 'letra', text: 'abcdefgh'.charAt(k) + ')' }), el('span', { text: p.ops[orig] })
+        ]);
+        input.addEventListener('change', function () {
+          S.r[p.n] = orig;
+          guardarLocal();
+          Array.prototype.forEach.call(grupo.querySelectorAll('.opcion'), function (o) { o.classList.remove('elegida'); });
+          etiqueta.classList.add('elegida');
+          li.classList.remove('falta');
+          if (!msg.hidden) actualizarFaltan();
+        });
+        grupo.appendChild(etiqueta);
+      });
+      ol.appendChild(li);
+    });
+
+    return frag([
+      el('div', { class: 'portada' }, [
+        el('p', { class: 'ceja', text: 'Parte ' + (S.b + 1) + ' de ' + NB + ' · Preguntas' }),
+        el('h2', { text: b.titulo })
+      ]),
+      boton('Volver al texto', 'secundario volver', function () {
+        S.g[S.b] = (S.g[S.b] || 0) + 1;
+        ir('texto');
+      }),
+      ol,
+      msg,
+      el('div', { class: 'acciones' }, [
+        S.b > 0 ? boton('Parte anterior', 'secundario', function () { S.b--; ir(S.leido[S.b] ? 'preguntas' : 'texto'); }) : null,
+        boton(siguienteTxt, 'primario', function () {
+          var f = actualizarFaltan();
+          if (f.length) {
+            f.forEach(function (p) { var n = document.getElementById('p-' + p.n); if (n) n.classList.add('falta'); });
+            var primero = document.getElementById('p-' + f[0].n);
+            if (primero) primero.scrollIntoView({ block: 'center' });
+            return;
+          }
+          if (S.b < NB - 1) { S.b++; ir(S.leido[S.b] ? 'preguntas' : 'texto'); }
+          else ir(CIERRE.length ? 'cierre' : 'revisar');
+        })
+      ])
+    ]);
+  }
+
+  function vistaCierre() {
+    var campos = [];
+    var avisoPegar = el('p', { class: 'error', role: 'alert', hidden: true, text: 'Aquí no se puede pegar texto: escribe tu respuesta.' });
+    var msg = el('p', { class: 'faltan', role: 'status', hidden: true, text: 'Contesta las preguntas abiertas para continuar.' });
+    var bloques = CIERRE.map(function (q, i) {
+      var id = 'abierta-' + i;
+      var ta = el('textarea', { id: id, rows: 6, spellcheck: 'true', autocapitalize: 'sentences' });
+      ta.value = S.a[i] || '';
+      ta.addEventListener('input', function () { S.a[i] = ta.value; guardarLocal(); });
+      sinPegar(ta, avisoPegar);
+      campos.push(ta);
+      return el('div', { class: 'pregunta' }, [
+        el('label', { class: 'enunciado', for: id, text: q.q }),
+        q.ayuda ? el('p', { class: 'nota-campo', text: q.ayuda }) : null,
+        ta
+      ]);
+    });
+    return frag([
+      el('div', { class: 'portada' }, [
+        el('p', { class: 'ceja', text: 'Para terminar' }),
+        el('h2', { text: CIERRE.length === 1 ? 'Una pregunta abierta' : 'Preguntas abiertas' }),
+        el('p', { class: 'fuente', text: 'No tienen puntos, pero son obligatorias.' })
+      ]),
+      el('div', { class: 'preguntas' }, bloques),
+      avisoPegar, msg,
+      el('div', { class: 'acciones' }, [
+        boton('Parte anterior', 'secundario', function () { S.b = NB - 1; ir('preguntas'); }),
+        boton('Revisar y enviar', 'primario', function () {
+          var vacia = campos.filter(function (c) { return c.value.trim().length < 2; })[0];
+          if (vacia) { msg.hidden = false; vacia.focus(); return; }
+          ir('revisar');
+        })
+      ])
+    ]);
+  }
+
+  function vistaRevisar() {
+    var filas = L.bloques.map(function (b, bi) {
+      var tot = PREG.filter(function (p) { return p.b === bi; }).length;
+      var hechas = tot - faltanEn(bi).length;
+      return el('li', null, [
+        el('div', null, [
+          el('div', { text: 'Parte ' + (bi + 1) }),
+          el('div', { class: 'cuenta' + (hechas === tot ? ' completa' : ''), text: hechas + ' de ' + tot + ' contestadas' })
+        ]),
+        boton('Revisar', 'secundario', function () { S.b = bi; ir(S.leido[bi] ? 'preguntas' : 'texto'); })
+      ]);
+    });
+    if (CIERRE.length) {
+      var llenas = S.a.filter(function (x) { return (x || '').trim().length >= 2; }).length;
+      filas.push(el('li', null, [
+        el('div', null, [el('div', { text: 'Preguntas abiertas' }),
+          el('div', { class: 'cuenta' + (llenas === CIERRE.length ? ' completa' : ''), text: llenas + ' de ' + CIERRE.length + ' contestadas' })]),
+        boton('Revisar', 'secundario', function () { ir('cierre'); })
+      ]));
+    }
+    var faltan = S.r.filter(function (x) { return x === null; }).length;
+    var m = menos(S.salidas);
+    var hijos = [
+      el('div', { class: 'portada' }, [
+        el('p', { class: 'ceja', text: 'Revisión' }),
+        el('h2', { text: 'Revisa antes de enviar' }),
+        el('p', { class: 'fuente', text: 'Al enviar ya no podrás cambiar tus respuestas.' })
+      ]),
+      el('ul', { class: 'resumen' }, filas),
+      el('p', { text: 'Salidas de la pestaña: ' + S.salidas + (m > 0 ? ' (se te ' + (m === 1 ? 'resta ' : 'restan ') + puntos(m) + ')' : '') + '.' }),
+      S.error ? el('p', { class: 'error', role: 'alert', text: S.error }) : null
+    ];
+    if (faltan) {
+      hijos.push(el('p', { class: 'faltan', text: faltan === 1 ? 'Te falta 1 pregunta.' : 'Te faltan ' + faltan + ' preguntas.' }));
+    } else if (!S.confirmar) {
+      hijos.push(el('div', { class: 'acciones' }, [boton('Enviar mis respuestas', 'primario', function () { S.confirmar = true; pintar(); })]));
+    } else {
+      hijos.push(el('div', { class: 'tarjeta confirmar' }, [
+        el('p', { text: '¿Enviar ahora? Después ya no podrás cambiar nada.' }),
+        el('div', { class: 'acciones' }, [
+          boton('Todavía no', 'secundario', function () { S.confirmar = false; pintar(); }),
+          boton('Sí, enviar', 'primario', enviar)
+        ])
+      ]));
+    }
+    return frag(hijos);
+  }
+
+  // ── Calificar ─────────────────────────────────────────────────────────────
+  function calificar(aciertos, salidas) {
+    var n = PREG.length;
+    var e = L.escala || {};
+    var min = e.min === undefined ? 1 : Number(e.min);
+    var max = e.max === undefined ? 10 : Number(e.max);
+    var arriba = (e.redondeo || 'arriba') === 'arriba';
+    var base = arriba
+      ? Math.ceil((min * n + (max - min) * aciertos) / n)
+      : Math.round((min + (max - min) * aciertos / n) * 100) / 100;
+    var m = menos(salidas);
+    var final = Math.max(min, base - m);
+    if (!arriba) final = Math.round(final * 100) / 100;
+    return { base: base, menos: m, final: final };
+  }
+
+  function enviar() {
+    if (S.vista === 'enviando') return;
+    var v = L.ventana || {};
+    if (v.hasta && Date.now() > Date.parse(v.hasta) + 15 * 60000) {
+      S.error = 'Esta lectura ya se cerró y no acepta envíos. Avísale a tu profesor.';
+      S.confirmar = false;
+      pintar();
+      return;
+    }
+    ir('enviando');
+    var salidas = S.salidas;
+    Promise.all(PREG.map(function (p) {
+      var elegida = p.ops[S.r[p.n]];
+      return sha(SAL + '|' + L.clave + '|' + p.n + '|' + elegida).then(function (h) { return h.slice(0, 16) === p.k; });
+    })).then(function (marcas) {
+      var aciertos = marcas.filter(Boolean).length;
+      var cal = calificar(aciertos, salidas);
+      var envio = hora(new Date());
+      var inicio = S.inicio ? hora(new Date(S.inicio)) : '';
+      var numero = S.numero || 1;
+      var firma = [SAL, PRUEBA ? 'P' : 'C', L.clave, normalizar(S.nombre), S.grupo, aciertos, salidas, cal.final, envio, numero].join('|');
+      return sha(firma).then(function (h) {
+        S.constancia = {
+          titulo: L.titulo, materia: L.materia || '', nombre: S.nombre, grupo: S.grupo,
+          inicio: inicio, envio: envio, aciertos: aciertos, reactivos: PREG.length,
+          salidas: salidas, base: cal.base, menos: cal.menos, calificacion: cal.final,
+          codigo: h.slice(0, 6).toUpperCase(), regresos: S.g.reduce(function (a, b) { return a + b; }, 0),
+          abiertas: CIERRE.map(function (q, i) { return { q: q.q, r: (S.a[i] || '').trim() }; }),
+          prueba: PRUEBA, numero: numero
+        };
+        S.constancia.envioId = registrar('envio', {
+          aciertos: aciertos, reactivos: PREG.length, base: cal.base, menos: cal.menos, calificacion: cal.final,
+          envio: envio, codigo: S.constancia.codigo, regresos: S.constancia.regresos,
+          abiertas: S.constancia.abiertas.map(function (x, i) { return (i + 1) + '. ' + x.r; }).join('\n')
+        });
+        S.historial = (S.historial || []).concat([S.constancia]);
+        ir('constancia');
+        try { if (document.exitFullscreen && document.fullscreenElement) document.exitFullscreen(); } catch (e) { }
+      });
+    }).catch(function () {
+      S.vista = 'revisar';
+      S.error = 'No se pudo calificar en este navegador. Abre el enlace en Chrome o Safari actualizado y vuelve a intentarlo.';
+      guardarLocal();
+      pintar();
+    });
+  }
+
+  function rehacer() {
+    S.numero = (S.numero || 1) + 1;
+    S.intento = Math.random().toString(36).slice(2, 10);
+    S.orden = ordenPara(S.intento);
+    S.r = PREG.map(function () { return null; });
+    S.a = CIERRE.map(function () { return ''; });
+    S.g = lleno(NB, 0);
+    S.leido = lleno(NB, false);
+    S.salidas = 0;
+    S.inicio = Date.now();
+    S.b = 0;
+    S.constancia = null;
+    S.avisoPendiente = false;
+    S.audifonos = 0;
+    pantallaCompleta();
+    mantenerPantalla();
+    ir('texto');
+    registrar('inicio');
+  }
+
+  function vistaConstancia() {
+    var c = S.constancia || {};
+    var hist = (S.historial && S.historial.length) ? S.historial : [c];
+    var total = Math.max(maxIntentos(), hist.length);
+    var quedan = Math.max(0, maxIntentos() - hist.length);
+    var calificados = hist.filter(function (x) { return !x.reiniciado; });
+    if (!calificados.length) calificados = [c];
+    var reiniciados = hist.length - calificados.length;
+    var cuenta = cuentaLaMejor()
+      ? calificados.reduce(function (m, x) { return Number(x.calificacion) > Number(m.calificacion) ? x : m; }, calificados[0])
+      : calificados[calificados.length - 1];
+
+    var dl = el('dl', null, [
+      el('dt', { text: 'Nombre' }), el('dd', { text: c.nombre || '' }),
+      el('dt', { text: 'Grupo' }), el('dd', { text: c.grupo || '' }),
+      total > 1 ? el('dt', { text: 'Intento' }) : null,
+      total > 1 ? el('dd', { text: (c.numero || 1) + ' de ' + total }) : null,
+      el('dt', { text: 'Empezó' }), el('dd', { text: c.inicio || '' }),
+      el('dt', { text: 'Envió' }), el('dd', { text: c.envio || '' }),
+      el('dt', { text: 'Aciertos' }), el('dd', { text: c.aciertos + ' de ' + c.reactivos }),
+      el('dt', { text: 'Salidas' }),
+      el('dd', { text: c.salidas + (c.menos > 0 ? ' (−' + puntos(c.menos) + ')' : '') }),
+      el('dt', { text: 'Código' }), el('dd', { class: 'codigo', text: c.codigo || '' })
+    ]);
+
+    var detalle;
+    if (calificados.length > 1) detalle = (cuentaLaMejor() ? 'Cuenta la más alta de tus ' : 'Cuenta el último de tus ') + calificados.length + ' intentos.';
+    else if (reiniciados) detalle = (reiniciados === 1 ? 'El intento reiniciado no cuenta.' : 'Los intentos reiniciados no cuentan.') +
+      (c.menos > 0 ? ' Ya con ' + puntos(c.menos) + ' menos por las salidas.' : '');
+    else detalle = c.menos > 0 ? 'Calificación: ' + c.base + ' menos ' + puntos(c.menos) + ' por las salidas.' : 'Calificación';
+    var cal = el('div', { class: 'calificacion' }, [
+      el('span', { class: 'grande', text: String(cuenta.calificacion) }),
+      el('span', { class: 'detalle', text: detalle })
+    ]);
+
+    var lista = hist.length > 1 ? el('div', { class: 'intentos' }, [
+      el('p', { class: 'ceja', text: 'Tus intentos' }),
+      el('ol', null, hist.map(function (x) {
+        if (x.reiniciado) {
+          return el('li', null, ['Reiniciado a las ' + String(x.fin || '').slice(-5) + ' con ' + veces(x.salidas) +
+            ' y ' + x.contestadas + ' de ' + x.reactivos + ' contestadas · sin calificación']);
+        }
+        return el('li', null, [
+          x.aciertos + ' de ' + x.reactivos + ' · ' + veces(x.salidas) + ' · calificación ' + x.calificacion + ' · ',
+          el('span', { class: 'codigo', text: x.codigo || '' }),
+          x === cuenta ? el('span', { class: 'cuenta', text: '  ← cuenta' }) : null
+        ]);
+      }))
+    ]) : null;
+
+    var otra = null;
+    if (quedan > 0 && !S.confirmarRehacer) {
+      otra = el('section', { class: 'tarjeta rehacer' }, [
+        el('p', { text: (quedan === 1 ? 'Te queda 1 intento' : 'Te quedan ' + quedan + ' intentos') +
+          '. Si lo rehaces, empiezas de cero, con las opciones en otro orden' +
+          (cuentaLaMejor() ? ', y cuenta tu calificación más alta.' : ', y cuenta el último intento.') +
+          ' Si ya estás conforme, sube la captura de esta pantalla.' }),
+        boton('Rehacer el cuestionario', 'secundario', function () { S.confirmarRehacer = true; pintar(); })
+      ]);
+    } else if (quedan > 0) {
+      otra = el('section', { class: 'tarjeta confirmar rehacer' }, [
+        el('p', { text: '¿Rehacerlo ahora? Las salidas vuelven a contar desde cero. Al terminar, sube la captura de la constancia final, que trae tus dos intentos.' }),
+        el('div', { class: 'acciones' }, [
+          boton('Todavía no', 'secundario', function () { S.confirmarRehacer = false; pintar(); }),
+          boton('Sí, rehacerlo', 'primario', rehacer)
+        ])
+      ]);
+    }
+
+    var abiertas = (c.abiertas || []).filter(function (x) { return x.r; });
+    return frag([
+      el('section', { class: 'tarjeta constancia' }, [
+        c.prueba
+          ? el('p', { class: 'sello prueba', text: 'Prueba: no cuenta' })
+          : el('p', { class: 'sello', text: 'Enviado' }),
+        el('p', { class: c.guardada ? 'consejo' : 'error', text: c.guardada
+          ? 'Tus resultados ya llegaron a la lista de tu profesor.'
+          : 'Guardando tus resultados en la lista de tu profesor… Si no tienes internet, se mandan solos cuando vuelvas a abrir esta página.' }),
+        el('div', { class: 'portada' }, [
+          c.materia ? el('p', { class: 'ceja', text: c.materia }) : null,
+          el('h1', { text: c.titulo || '' })
+        ]),
+        dl,
+        cal,
+        lista
+      ]),
+      otra,
+      abiertas.length ? el('section', { class: 'tarjeta' }, [
+        el('h2', { text: 'Tus respuestas abiertas' })
+      ].concat(abiertas.map(function (x) {
+        return el('div', { class: 'abierta' }, [el('p', { class: 'nota-campo', text: x.q }), el('p', { text: x.r })]);
+      }))) : null,
+      el('p', { class: 'instruccion' }, [
+        el('b', { text: abiertas.length ? 'Toma captura de la constancia y de tus respuestas abiertas' : 'Toma una captura de esta pantalla' }),
+        ' y súbela a Academic: esa es tu entrega. Si cierras la página, vuelve a abrir el enlace en este mismo celular y la constancia aparece otra vez.'
+      ])
+    ]);
+  }
+
+  // ── Arranque ──────────────────────────────────────────────────────────────
+  function cargarJSON(ruta) {
+    return fetch(ruta, { cache: 'no-store' }).then(function (r) {
+      if (!r.ok) throw new Error(String(r.status));
+      return r.json();
+    });
+  }
+
+  function claveDelEnlace() {
+    return (location.hash || '').replace(/^#/, '').trim();
+  }
+
+  function mostrarLista() {
+    document.getElementById('barra').hidden = true;
+    app.textContent = '';
+    var abiertas = ((INDICE && INDICE.lecturas) || []).filter(function (x) { return x.abierta; });
+    if (!abiertas.length) {
+      app.appendChild(vistaMensaje('Lecturas en clase', '', 'No hay lecturas abiertas en este momento. Usa el enlace que te dio tu profesor.'));
+      return;
+    }
+    // Una sección por materia, en el orden en que aparecen en el índice, con su nombre arriba
+    // como separador para que nadie abra la lectura de la otra materia.
+    var materias = [];
+    var porMateria = {};
+    abiertas.forEach(function (x) {
+      var m = x.materia || 'Otras lecturas';
+      if (!porMateria[m]) { porMateria[m] = []; materias.push(m); }
+      porMateria[m].push(x);
+    });
+    app.appendChild(frag([
+      el('div', { class: 'portada' }, [el('h1', { text: 'Lecturas abiertas' }), el('p', { class: 'fuente', text: 'Busca tu materia y elige la lectura que te pidió tu profesor.' })])
+    ].concat(materias.map(function (m) {
+      return el('section', { class: 'materia', 'aria-label': m }, [
+        el('h2', { text: m }),
+        el('ul', { class: 'lista' }, porMateria[m].map(function (x) {
+          return el('li', null, [el('a', { href: '#' + x.clave }, [x.titulo])]);
+        }))
+      ]);
+    }))));
+  }
+
+  var PRUEBA = false;    // enlace terminado en .prueba: para que el profesor la recorra antes
+
+  function prepararLectura(lec, hot) {
+    L = lec;
+    if (PRUEBA) {
+      L.ventana = {};
+      L.abierta = true;
+    }
+    PREG = [];
+    L.bloques.forEach(function (b, bi) {
+      (b.preguntas || []).forEach(function (p) { PREG.push({ b: bi, q: p.q, ops: p.ops, k: p.k, n: PREG.length }); });
+    });
+    NB = L.bloques.length;
+    CIERRE = L.cierre || [];
+    LOCAL = 'lecturas-app:' + L.clave + (PRUEBA ? ':prueba' : '');
+    S = estadoNuevo();
+    var g = (hot && hot.clave === L.clave && hot.S) ? hot.S : cargarLocal();
+    if (g && g.intento && (!g.version || g.version === (L.version || ''))) {
+      ['intento', 'nombre', 'grupo', 'b', 'orden', 'constancia', 'inicio', 'numero', 'audifonos'].forEach(function (k) { if (g[k] !== undefined && g[k] !== null) S[k] = g[k]; });
+      if (Array.isArray(g.historial)) S.historial = g.historial;
+      S.salidas = Number(g.salidas) || 0;
+      if (Array.isArray(g.r) && g.r.length === PREG.length) S.r = g.r;
+      if (Array.isArray(g.a) && g.a.length === CIERRE.length) S.a = g.a;
+      if (Array.isArray(g.g) && g.g.length === NB) S.g = g.g;
+      if (Array.isArray(g.leido) && g.leido.length === NB) S.leido = g.leido;
+      S.vista = g.constancia ? 'constancia' : (ACTIVAS.indexOf(g.vista) >= 0 ? g.vista : 'texto');
+      S.avisoPendiente = !!g.avisoPendiente && !(hot && hot.S);
+      if (!S.orden) S.orden = ordenPara(S.intento);
+    }
+    if (S.vista === 'constancia') { pintar(); return; }
+    var ahora = Date.now();
+    var v = L.ventana || {};
+    if (L.abierta === false || (v.hasta && ahora > Date.parse(v.hasta))) {
+      if (!S.intento) { S.vista = 'cerrada'; pintar(); return; }
+      if (v.hasta && ahora > Date.parse(v.hasta) + 15 * 60000) { S.vista = 'cerrada'; pintar(); return; }
+    }
+    if (v.desde && ahora < Date.parse(v.desde) && !S.intento) {
+      S.abre = hora(new Date(Date.parse(v.desde)));
+      S.vista = 'todavia';
+      pintar();
+      return;
+    }
+    pintar();
+    if (S.avisoPendiente && activo()) mostrarAviso();
+  }
+
+  function abrir(hot) {
+    var clave = claveDelEnlace();
+    if (!clave && hot && hot.clave) clave = hot.clave;
+    PRUEBA = /\.prueba$/.test(clave);
+    clave = clave.replace(/\.prueba$/, '');
+    if (!clave) {
+      cargarJSON('lecturas/indice.json').then(function (ind) {
+        INDICE = ind;
+        var abiertas = (ind.lecturas || []).filter(function (x) { return x.abierta; });
+        if (abiertas.length === 1) { location.hash = abiertas[0].clave; return; }
+        mostrarLista();
+      }).catch(function () {
+        app.textContent = '';
+        app.appendChild(vistaMensaje('Lecturas en clase', '', 'Usa el enlace que te dio tu profesor.'));
+      });
+      return;
+    }
+    if (!/^[a-z0-9-]+$/.test(clave)) {
+      app.textContent = '';
+      app.appendChild(vistaMensaje('No encuentro esta lectura', '', 'Revisa el enlace que te dio tu profesor.'));
+      return;
+    }
+    cargarJSON('lecturas/' + clave + '.json').then(function (lec) {
+      prepararLectura(lec, hot);
+    }).catch(function () {
+      app.textContent = '';
+      app.appendChild(vistaMensaje('No encuentro esta lectura', '', 'Revisa el enlace que te dio tu profesor.'));
+    });
+  }
+
+  window.addEventListener('hashchange', function () { if (!activo()) abrir(null); });
+
+  abrir(null);
+  enviarPendientes();
+})();
+</script>
+</body>
+</html>
