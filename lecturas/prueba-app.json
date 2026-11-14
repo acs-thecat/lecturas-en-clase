@@ -1,0 +1,99 @@
+{
+ "clave": "prueba-app",
+ "materia": "Prueba",
+ "titulo": "Prueba de la app (no cuenta)",
+ "descripcion": "Lectura corta para probar la app: micrófono, audífonos, salidas y envío a la hoja.",
+ "fuente": "Texto de prueba.",
+ "grupos": [
+  "Prueba"
+ ],
+ "abierta": false,
+ "ventana": {
+  "desde": null,
+  "hasta": null
+ },
+ "escala": {
+  "min": 1,
+  "max": 10,
+  "redondeo": "arriba"
+ },
+ "penalizacion": {
+  "cada": 3,
+  "resta": 1
+ },
+ "intentos": 2,
+ "cuenta": "mejor",
+ "bloques": [
+  {
+   "titulo": "Primera parte",
+   "texto": [
+    {
+     "t": "p",
+     "x": "El cielo despejado al mediodía se ve azul. Los perros caminan en cuatro patas."
+    }
+   ],
+   "preguntas": [
+    {
+     "q": "¿De qué color es el cielo despejado al mediodía?",
+     "ops": [
+      "Azul",
+      "Verde",
+      "Rojo",
+      "Negro"
+     ],
+     "k": "18024c68cd315ad9"
+    },
+    {
+     "q": "¿Cuántas patas tiene un perro?",
+     "ops": [
+      "Dos",
+      "Tres",
+      "Cuatro",
+      "Seis"
+     ],
+     "k": "c47d3784a7990ed6"
+    }
+   ]
+  },
+  {
+   "titulo": "Segunda parte",
+   "texto": [
+    {
+     "t": "p",
+     "x": "En el salón se escribe en el pizarrón blanco con plumón. Después del lunes viene el martes."
+    }
+   ],
+   "preguntas": [
+    {
+     "q": "¿Qué se usa para escribir en el pizarrón blanco?",
+     "ops": [
+      "Gis",
+      "Plumón",
+      "Lápiz",
+      "Crayón"
+     ],
+     "k": "8485fd3ab746faf4"
+    },
+    {
+     "q": "¿Qué día va después del lunes?",
+     "ops": [
+      "Domingo",
+      "Martes",
+      "Jueves",
+      "Sábado"
+     ],
+     "k": "ce6bd09b1f66820c"
+    }
+   ]
+  }
+ ],
+ "cierre": [
+  {
+   "q": "Escribe una frase sobre cómo te fue con la prueba.",
+   "ayuda": ""
+  }
+ ],
+ "version": "prueba-1",
+ "generada": "2026-11-13",
+ "origen": "prueba"
+}
