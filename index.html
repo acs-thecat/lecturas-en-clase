@@ -327,7 +327,6 @@ button:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-
 .ayuda ol { margin: 0; padding-left: 1.2rem; display: grid; gap: 4px; }
 .ayuda .ayuda-titulo { font-weight: 700; }
 .boton-micro { display: flex; justify-content: center; padding: 4px 0 6px; }
-.pastilla { cursor: pointer; }
 #codigo-campo { font-size: 1.4rem; letter-spacing: 0.3em; text-align: center; -webkit-text-security: disc; }
 .velo h2 { font-size: 1.25rem; }
 
@@ -394,10 +393,11 @@ button:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-
 </div>
 <div class="velo" id="velo-codigo" hidden role="dialog" aria-modal="true" aria-labelledby="codigo-titulo">
   <div class="tarjeta">
-    <h2 id="codigo-titulo">Código del profesor</h2>
-    <p>Sólo tu profesor puede quitar salidas. Cada intento queda registrado en su lista.</p>
+    <h2 id="codigo-titulo">Revisión manual del profesor</h2>
+    <p>Sólo tu profesor puede usar esta revisión: con su código quita las salidas que no fueron tu culpa. Cada intento queda registrado en su lista.</p>
     <p class="nota-campo" id="codigo-salidas"></p>
-    <input type="text" id="codigo-campo" inputmode="numeric" autocomplete="off" autocapitalize="off" spellcheck="false" maxlength="20" aria-label="Código del profesor">
+    <label class="campo" for="codigo-campo">Código del profesor</label>
+    <input type="text" id="codigo-campo" inputmode="numeric" autocomplete="off" autocapitalize="off" spellcheck="false" maxlength="20">
     <p class="error" id="codigo-error" hidden></p>
     <div class="acciones">
       <button class="secundario" id="codigo-una" type="button">Quitar 1 salida</button>
@@ -877,20 +877,58 @@ button:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-
   }
   window.addEventListener('online', enviarPendientes);
 
-  // ── Código del profesor ───────────────────────────────────────────────────
-  // Idea de Adrián (19 nov 2026): cuando una salida no fue culpa del alumno (por ejemplo, arreglar el
-  // micrófono), el profesor toca el recuadro de "Salidas" en el celular del alumno, escribe su código y quita
-  // una salida o las deja en 0. El código NO está en esta página (el repositorio es público): lo revisa el
-  // Apps Script contra la pestaña "Profesor" de la hoja, bloquea tras 5 intentos malos y anota cada intento.
+  // ── Revisión manual del profesor ──────────────────────────────────────────
+  // Pedido de Adrián (19 nov 2026): al final, junto a la calificación, el botón "Revisión manual del profesor"
+  // pide su código y le deja quitar una salida o dejarlas en 0 cuando no fueron culpa del alumno (por ejemplo,
+  // arreglar el micrófono). El código NO está en esta página (el repositorio es público): lo revisa el Apps
+  // Script contra la pestaña "Profesor" de la hoja, bloquea tras 5 intentos malos y anota cada intento. Con las
+  // salidas nuevas se recalculan la calificación y el código de la constancia (verificable con lecturas_app.py),
+  // y va a la hoja una fila "Revisión del profesor".
   var dialogoProfesor = false;
-  function abrirCodigo() {
-    if (!activo()) return;
+  function abrirRevision() {
+    if (!S || !S.constancia || S.vista !== 'constancia') return;
     dialogoProfesor = true;
     document.getElementById('codigo-campo').value = '';
     document.getElementById('codigo-error').hidden = true;
-    document.getElementById('codigo-salidas').textContent = 'Salidas en este intento: ' + S.salidas + '.';
+    document.getElementById('codigo-salidas').textContent = 'Salidas en este intento: ' + S.constancia.salidas + '.';
     document.getElementById('velo-codigo').hidden = false;
     document.getElementById('codigo-campo').focus();
+  }
+  function revisionProfesor(c) {
+    var nota = null;
+    if (c.revisada) {
+      nota = el('p', { class: 'consejo', text: c.quitadas > 0
+        ? 'Revisada por el profesor: ' + (c.quitadas === 1 ? 'se quitó 1 salida' : 'se quitaron ' + c.quitadas + ' salidas') +
+          '. La calificación y el código ya están actualizados.'
+        : 'Revisada por el profesor: sin cambios en las salidas.' });
+    }
+    return el('section', { class: 'tarjeta revision' }, [nota, boton('Revisión manual del profesor', 'secundario', abrirRevision)]);
+  }
+  function aplicarRevision(c, nuevas) {
+    var numero = c.numero || 1;
+    var cal = calificar(c.aciertos, nuevas);
+    var firma = [SAL, c.prueba ? 'P' : 'C', L.clave, normalizar(c.nombre), c.grupo, c.aciertos, nuevas, cal.final, c.envio, numero].join('|');
+    return sha(firma).then(function (h) {
+      var cambios = {
+        salidas: nuevas, menos: cal.menos, calificacion: cal.final, codigo: h.slice(0, 6).toUpperCase(),
+        quitadas: (c.quitadas || 0) + Math.max(0, c.salidas - nuevas), revisada: true, guardada: false
+      };
+      var viejo = c.codigo;
+      (S.historial || []).forEach(function (x) {   // su copia en la lista de intentos
+        if (x !== c && !x.reiniciado && x.codigo === viejo && (x.numero || 1) === numero) Object.assign(x, cambios);
+      });
+      Object.assign(c, cambios);
+      var id = registrar('Revisión del profesor', {
+        aciertos: c.aciertos, reactivos: c.reactivos, base: c.base, menos: c.menos, calificacion: c.calificacion,
+        envio: c.envio, codigo: c.codigo, regresos: c.regresos, salidas: c.salidas, quitadas: c.quitadas, numero: numero
+      });
+      c.envioId = id;
+      (S.historial || []).forEach(function (x) {
+        if (!x.reiniciado && x.codigo === c.codigo && (x.numero || 1) === numero) x.envioId = id;
+      });
+      guardarLocal();
+      pintar();
+    });
   }
   function cerrarCodigo() {
     document.getElementById('velo-codigo').hidden = true;
@@ -899,26 +937,25 @@ button:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-
     setTimeout(function () { dialogoProfesor = false; }, 1200);
   }
   function usarCodigoProfesor(accion) {
+    var c = S && S.constancia;
+    if (!c) return;
     var codigo = document.getElementById('codigo-campo').value.trim();
     var err = document.getElementById('codigo-error');
     if (!codigo) { err.textContent = 'Escribe el código.'; err.hidden = false; return; }
     err.textContent = 'Revisando…'; err.hidden = false;
     var d = {
       id: idNuevo(), evento: 'codigo', accion: accion, codigoProfesor: codigo, prueba: PRUEBA, clave: L.clave,
-      titulo: L.titulo, materia: L.materia || '', nombre: S.nombre, grupo: S.grupo, numero: S.numero || 1,
-      intento: S.intento, salidas: S.salidas, audifonos: S.audifonos || 0, quitadas: S.quitadas || 0,
-      inicio: S.inicio ? hora(new Date(S.inicio)) : '', navegador: navigator.userAgent
+      titulo: L.titulo, materia: L.materia || '', nombre: c.nombre, grupo: c.grupo, numero: c.numero || 1,
+      intento: S.intento, salidas: c.salidas, audifonos: S.audifonos || 0, quitadas: c.quitadas || 0,
+      inicio: c.inicio || '', navegador: navigator.userAgent
     };
     fetch(HOJA, { method: 'POST', body: JSON.stringify(d), headers: { 'Content-Type': 'text/plain;charset=utf-8' } })
       .then(function (r) { return r.json(); })
       .then(function (res) {
         if (res && res.ok && typeof res.salidas === 'number') {
-          S.quitadas = (S.quitadas || 0) + Math.max(0, S.salidas - res.salidas);
-          S.salidas = res.salidas;
-          S.avisoPendiente = false;
-          guardarLocal();
-          pintarBarra();
-          cerrarCodigo();
+          aplicarRevision(c, res.salidas).then(cerrarCodigo, function () {
+            err.textContent = 'No se pudo recalcular en este navegador. Abre el enlace en Chrome actualizado.'; err.hidden = false;
+          });
           return;
         }
         err.textContent = res && res.error === 'bloqueado' ? 'Demasiados intentos incorrectos. Espera media hora.'
@@ -928,7 +965,6 @@ button:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-
       })
       .catch(function () { err.textContent = 'No hay conexión. Inténtalo otra vez.'; err.hidden = false; });
   }
-  document.getElementById('pastilla').addEventListener('click', abrirCodigo);
   document.getElementById('codigo-una').addEventListener('click', function () { usarCodigoProfesor('una'); });
   document.getElementById('codigo-todas').addEventListener('click', function () { usarCodigoProfesor('todas'); });
   document.getElementById('codigo-cerrar').addEventListener('click', cerrarCodigo);
@@ -1522,6 +1558,7 @@ button:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-
         cal,
         lista
       ]),
+      revisionProfesor(c),
       otra,
       abiertas.length ? el('section', { class: 'tarjeta' }, [
         el('h2', { text: 'Tus respuestas abiertas' })
