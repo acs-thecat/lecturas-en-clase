@@ -53,13 +53,13 @@ input, textarea, select { -webkit-user-select: text; user-select: text; font: in
 
 .barra {
   position: sticky;
-  top: env(safe-area-inset-top, 0px);
+  top: 0;
   z-index: 10;
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: 12px;
-  padding-block: 10px;
+  padding-block: calc(10px + env(safe-area-inset-top, 0px)) 10px;
   padding-left: max(16px, env(safe-area-inset-left, 0px));
   padding-right: max(16px, env(safe-area-inset-right, 0px));
   background: var(--hoja);
@@ -647,7 +647,6 @@ button:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-
   });
   window.addEventListener('focus', function () { vistoFoco = true; volverDelFoco(); });
   document.getElementById('cubierta').addEventListener('click', function () {
-    pantallaCompleta();
     if (fueraPorFoco) volverDelFoco();
   });
   window.addEventListener('resize', function () {
@@ -812,18 +811,8 @@ button:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-
   }
   setInterval(function () { if (S) revisarAudifonos(); }, 3000);
 
-  // ── Pantalla completa ─────────────────────────────────────────────────────
-  // En Android oculta la barra del navegador mientras leen. Si el navegador no la permite, no pasa nada.
-  function pantallaCompleta() {
-    try {
-      var d = document.documentElement;
-      if (document.fullscreenElement || document.webkitFullscreenElement) return;
-      var f = d.requestFullscreen || d.webkitRequestFullscreen;
-      if (!f) return;
-      var p = f.call(d, { navigationUI: 'hide' });
-      if (p && p.catch) p.catch(function () { });
-    } catch (e) { }
-  }
+  // Sin pantalla completa: Adrián la quitó el 19 nov 2026 ("I think that makes more problems"): en el
+  // celular la barra quedaba bajo la franja de la cámara y tapaba el texto.
 
   // ── Resultados a la hoja del profesor ─────────────────────────────────────
   // Cada inicio, reinicio y envío se manda a una hoja de Google (Apps Script). Si no hay internet,
@@ -1062,7 +1051,6 @@ button:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-
         aviso.hidden = false; nombre.focus(); return;
       }
       if (!gru) { aviso.textContent = 'Elige tu grupo.'; aviso.hidden = false; grupoCampo.focus(); return; }
-      pantallaCompleta();
       pedirMicrofono().then(function () {
         S.nombre = nom;
         S.grupo = gru;
@@ -1346,7 +1334,6 @@ button:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-
         });
         S.historial = (S.historial || []).concat([S.constancia]);
         ir('constancia');
-        try { if (document.exitFullscreen && document.fullscreenElement) document.exitFullscreen(); } catch (e) { }
       });
     }).catch(function () {
       S.vista = 'revisar';
@@ -1370,7 +1357,6 @@ button:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-
     S.constancia = null;
     S.avisoPendiente = false;
     S.audifonos = 0;
-    pantallaCompleta();
     mantenerPantalla();
     ir('texto');
     registrar('inicio');
