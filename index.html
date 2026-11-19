@@ -323,6 +323,10 @@ button:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-
   hyphens: auto;
 }
 .ceja, .sello, .tarjeta .ceja, .tarjeta .sello, .tarjeta .intentos li { text-align: start; -webkit-hyphens: manual; hyphens: manual; }
+.ayuda { display: grid; gap: 6px; padding: 10px 12px; border-radius: 8px; background: var(--acento-suave); font-size: 0.95rem; }
+.ayuda ol { margin: 0; padding-left: 1.2rem; display: grid; gap: 4px; }
+.ayuda .ayuda-titulo { font-weight: 700; }
+.boton-micro { display: flex; justify-content: center; padding: 4px 0 6px; }
 .velo h2 { font-size: 1.25rem; }
 
 .centro { text-align: center; color: var(--tenue); padding: 40px 0; }
@@ -381,7 +385,8 @@ button:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-
   <div class="tarjeta">
     <h2 id="audio-titulo">Apaga el Bluetooth y quítate los audífonos</h2>
     <p id="audio-texto"></p>
-    <p class="consejo">Esto no cuenta como salida.</p>
+    <div class="ayuda" id="audio-ayuda" hidden></div>
+    <p class="consejo" id="audio-nota">Esto no cuenta como salida.</p>
     <button class="primario" id="audio-boton" type="button" hidden>Permitir el micrófono</button>
   </div>
 </div>
@@ -515,7 +520,7 @@ button:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-
   var oculto = false;
   document.addEventListener('visibilitychange', function () {
     if (document.visibilityState === 'hidden') {
-      if (!activo() || oculto) return;
+      if (!activo() || oculto || faltaMicro) return;
       oculto = true;
       S.salidas++;
       S.avisoPendiente = true;
@@ -617,7 +622,7 @@ button:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-
   }
   function revisarFoco() {
     if (!vistoFoco || fueraPorFoco || !activo() || VIGILADAS_FOCO.indexOf(S.vista) < 0) return;
-    if (conAudifonos || Date.now() < calmaHasta) return;   // micrófono, audífonos conectándose o lectura tapada
+    if (conAudifonos || faltaMicro || Date.now() < calmaHasta) return;   // micrófono, audífonos o lectura tapada
     if (document.visibilityState !== 'visible') return;   // eso ya lo cuenta la salida normal
     if (tieneFoco()) return;
     fueraPorFoco = true;
@@ -682,6 +687,9 @@ button:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-
   // cuenta como salida. El micrófono se abre y se cierra al instante: no se graba nada.
   // "Headset earpiece" es el auricular del propio teléfono: siempre aparece y no cuenta.
   var conAudifonos = false;
+  // Tapa de "vuelve a permitir el micrófono": mientras está puesta, la lectura no se ve, así que salir a la
+  // configuración de Chrome para arreglarlo no cuenta como salida (Adrián, 19 nov 2026).
+  var faltaMicro = false;
   var tAudio = null;
   // Hasta cuándo no cuenta la pérdida de foco: la ventana de permiso del micrófono y la ventanita que
   // algunos celulares muestran al conectar audífonos le quitan el foco a la página unos segundos.
@@ -713,23 +721,88 @@ button:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-
       ponerAudio(lista.some(esAudifono), false);
     }).catch(function () { });
   }
+  // Qué dice el navegador del permiso del micrófono: 'granted', 'prompt', 'denied' o '' si no lo dice.
+  function estadoMicro() {
+    try {
+      if (navigator.permissions && navigator.permissions.query) {
+        return navigator.permissions.query({ name: 'microphone' })
+          .then(function (p) { return p.state; }, function () { return ''; });
+      }
+    } catch (e) { }
+    return Promise.resolve('');
+  }
+  // Botón del propio navegador para el micrófono (elemento <microphone>, Chrome 157 lo trae en computadora).
+  // Según su explicación oficial (W3C), si el alumno ya había negado el micrófono, al tocarlo Chrome abre una
+  // ventana que le deja volver a permitirlo sin salir de la página. Al permitirlo, el navegador abre el
+  // micrófono: aquí se cierra al instante, porque sólo se quiere el permiso. Si no existe, quedan los pasos.
+  var hayBotonMicro = typeof window.HTMLMicrophoneElement !== 'undefined';
+  function botonMicro(listo) {
+    var b = document.createElement('microphone');
+    b.addEventListener('track', function () {
+      try { if (b.track) b.track.stop(); } catch (e) { }
+      calmaHasta = Date.now() + 2500; sinFoco = 0;
+      listo();
+    });
+    return b;
+  }
+  // Si el alumno tocó "No permitir nunca", Chrome ya no vuelve a preguntar, y el ícono junto a la dirección
+  // no muestra el micrófono (lo comprobó Adrián, 19 nov 2026): el botón del navegador o la configuración.
+  // Ruta según la ayuda de Google para Android.
+  function ayudaMicro(caja, titulo, cierre, listo) {
+    caja.textContent = '';
+    if (hayBotonMicro && listo) {
+      caja.appendChild(el('p', { class: 'ayuda-titulo', text: 'Toca este botón y elige permitir el micrófono:' }));
+      caja.appendChild(el('div', { class: 'boton-micro' }, [botonMicro(listo)]));
+      caja.appendChild(el('p', { class: 'ayuda-titulo', text: 'Si el botón no funciona, actívalo en la configuración de Chrome:' }));
+    } else {
+      caja.appendChild(el('p', { class: 'ayuda-titulo', text: titulo }));
+    }
+    caja.appendChild(el('ol', null, [
+      el('li', { text: 'Toca los tres puntos (⋮) de Chrome, arriba a la derecha, y luego Configuración.' }),
+      el('li', { text: 'Toca Configuración de sitios y luego Micrófono.' }),
+      el('li', { text: 'Si está elegido "No permitir que los sitios usen el micrófono", cámbialo a "Permitir que los sitios soliciten acceso".' }),
+      el('li', { text: 'En Bloqueados, toca ' + location.hostname + ' y elige Permitir.' }),
+      el('li', { text: cierre })
+    ]));
+    caja.appendChild(el('p', { text: 'En iPhone (Safari): toca el botón a la izquierda de la dirección ("aA"), luego Configuración del sitio web, Micrófono y Permitir.' }));
+    caja.appendChild(el('p', { text: 'Si nunca te apareció la pregunta del micrófono, copia el enlace y ábrelo en Chrome (en iPhone, en Safari).' }));
+    caja.hidden = false;
+  }
   function ponerAudio(tapar, faltaPermiso) {
     var c = document.getElementById('cubierta-audio');
-    if (!tapar) { conAudifonos = false; c.hidden = true; return; }
+    var ayuda = document.getElementById('audio-ayuda');
+    if (!tapar) { conAudifonos = false; faltaMicro = false; ayuda.hidden = true; c.hidden = true; return; }
+    if (!faltaPermiso) ayuda.hidden = true;
     document.getElementById('audio-titulo').textContent = faltaPermiso ? 'Vuelve a permitir el micrófono' : 'Apaga el Bluetooth y quítate los audífonos';
-    document.getElementById('audio-texto').textContent = faltaPermiso
-      ? 'Para seguir con la lectura, permite el micrófono otra vez. No se graba nada: sólo sirve para saber si hay audífonos conectados.'
-      : 'Tu celular tiene conectados audífonos u otro aparato, como un reloj inteligente. Mientras sigan conectados, el texto y las preguntas no se ven. Apaga el Bluetooth (o desconecta los audífonos) y la lectura vuelve sola.';
+    if (!(faltaPermiso && faltaMicro)) {   // si ya se muestran los pasos, no borrarlos en cada revisión
+      document.getElementById('audio-texto').textContent = faltaPermiso
+        ? 'Para seguir con la lectura, toca el botón y permite el micrófono otra vez. No se graba nada: sólo sirve para saber si hay audífonos conectados.'
+        : 'Tu celular tiene conectados audífonos u otro aparato, como un reloj inteligente. Mientras sigan conectados, el texto y las preguntas no se ven. Apaga el Bluetooth (o desconecta los audífonos) y la lectura vuelve sola.';
+    }
+    document.getElementById('audio-nota').textContent = faltaPermiso
+      ? 'Mientras ves este aviso, salir a la configuración de Chrome para activar el micrófono no cuenta como salida.'
+      : 'Esto no cuenta como salida.';
     document.getElementById('audio-boton').hidden = !faltaPermiso;
     if (!faltaPermiso && !conAudifonos && S) { S.audifonos = (S.audifonos || 0) + 1; guardarLocal(); }
     conAudifonos = !faltaPermiso;
+    faltaMicro = !!faltaPermiso;
     c.hidden = false;
   }
   document.getElementById('audio-boton').addEventListener('click', function () {
     pedirMicrofono().then(revisarAudifonos).catch(function () {
       document.getElementById('audio-texto').textContent =
-        'El navegador no dejó usar el micrófono. Toca el candado junto a la dirección de la página, permite el micrófono y vuelve a tocar el botón. Si no te aparece ninguna pregunta, copia el enlace y ábrelo en Chrome (en iPhone, en Safari).';
+        'Chrome no dejó usar el micrófono. Si antes tocaste "No permitir nunca", ya no vuelve a preguntar: ' +
+        (hayBotonMicro ? 'actívalo con el botón de abajo.' : 'actívalo con estos pasos.');
+      ayudaMicro(document.getElementById('audio-ayuda'), 'Cómo volver a permitir el micrófono en Chrome:',
+        'Regresa a esta pestaña y toca otra vez "Permitir el micrófono".', revisarAudifonos);
     });
+  });
+  // Al volver a la página (por ejemplo, desde la configuración de Chrome): revisar enseguida el micrófono y
+  // volver a pedir que la pantalla no se apague, porque el navegador suelta ese permiso al salir.
+  document.addEventListener('visibilitychange', function () {
+    if (document.visibilityState !== 'visible') return;
+    mantenerPantalla();
+    if (S) revisarAudifonos();
   });
   if (navigator.mediaDevices && navigator.mediaDevices.addEventListener) {
     navigator.mediaDevices.addEventListener('devicechange', function () {
@@ -951,7 +1024,7 @@ button:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-
           'Cambiar de app o de pestaña, usar otra app con la lectura en ventana flotante, en miniatura o en pantalla dividida, recargar la página o dejar que se apague la pantalla cuenta como salida.' +
           (p.cada > 0 ? ' Cada ' + p.cada + ' salidas se te resta ' + puntos(p.resta) + ' de la calificación.' : '')]),
         el('li', null, [el('b', { text: 'Sin audífonos ni reloj inteligente. ' }),
-          'Antes de empezar, apaga el Bluetooth de tu celular. Al empezar, la página te pide el micrófono: no graba nada, sólo revisa si hay algo conectado. Mientras haya audífonos o un reloj conectados, la lectura se tapa.']),
+          'Antes de empezar, apaga el Bluetooth de tu celular. Al empezar, la página te pide el micrófono: elige "Permitir mientras visito el sitio". No graba nada, sólo revisa si hay algo conectado. Mientras haya audífonos o un reloj conectados, la lectura se tapa.']),
         el('li', null, [el('b', { text: 'El texto no se puede copiar. ' }),
           CIERRE.length ? 'Tampoco se puede pegar en las respuestas abiertas.' : 'Contesta con lo que leíste.']),
         maxIntentos() > 1 ? el('li', null, [el('b', { text: 'Tienes ' + maxIntentos() + ' intentos. ' }),
@@ -1002,9 +1075,31 @@ button:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-
         ir('texto');
         registrar('inicio');
         revisarAudifonos();
-      }).catch(function () {
-        aviso.textContent = 'Para empezar tienes que permitir el micrófono. No se graba nada: sólo sirve para saber si hay audífonos conectados. Si ya lo negaste, toca el candado junto a la dirección de la página, permite el micrófono y vuelve a tocar "Empezar la lectura". Si no te aparece ninguna pregunta, copia el enlace y ábrelo en Chrome (en iPhone, en Safari).';
-        aviso.hidden = false;
+      }).catch(function (err) {
+        // Si el alumno tocó "No permitir nunca", Chrome ya no pregunta: se le dan los pasos para la configuración.
+        var sinMicro = !!(err && err.message === 'sin-micro');
+        estadoMicro().then(function (estado) {
+          aviso.textContent = sinMicro
+            ? 'Este navegador no deja usar el micrófono. Copia el enlace y ábrelo en Chrome (en iPhone, en Safari).'
+            : estado === 'prompt'
+              ? 'Para empezar tienes que permitir el micrófono. Vuelve a tocar "Empezar la lectura" y elige "Permitir mientras visito el sitio". No se graba nada: sólo revisa si hay audífonos conectados.'
+              : 'Para empezar tienes que permitir el micrófono. No se graba nada: sólo revisa si hay audífonos conectados. Como tocaste "No permitir nunca", Chrome ya no vuelve a preguntar: ' +
+                (hayBotonMicro ? 'actívalo con el botón de abajo.' : 'actívalo con estos pasos.');
+          aviso.hidden = false;
+          var caja = document.getElementById('ayuda-inicio');
+          if (!caja) {
+            caja = el('div', { class: 'ayuda', id: 'ayuda-inicio' });
+            aviso.parentNode.insertBefore(caja, aviso.nextSibling);
+          }
+          if (sinMicro) caja.hidden = true;
+          else ayudaMicro(caja,
+            estado === 'prompt' ? 'Si al tocar otra vez no aparece la pregunta:' : 'Cómo volver a permitir el micrófono en Chrome:',
+            'Regresa a esta pestaña y toca otra vez "Empezar la lectura".',
+            function () {   // con el permiso ya dado por el botón, empezar como si hubiera tocado "Empezar la lectura"
+              if (form.requestSubmit) form.requestSubmit();
+              else form.dispatchEvent(new Event('submit', { cancelable: true }));
+            });
+        });
       });
     });
     return frag([portada(), reglas, form]);
