@@ -327,6 +327,8 @@ button:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-
 .ayuda ol { margin: 0; padding-left: 1.2rem; display: grid; gap: 4px; }
 .ayuda .ayuda-titulo { font-weight: 700; }
 .boton-micro { display: flex; justify-content: center; padding: 4px 0 6px; }
+.pastilla { cursor: pointer; }
+#codigo-campo { font-size: 1.4rem; letter-spacing: 0.3em; text-align: center; -webkit-text-security: disc; }
 .velo h2 { font-size: 1.25rem; }
 
 .centro { text-align: center; color: var(--tenue); padding: 40px 0; }
@@ -390,6 +392,20 @@ button:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-
     <button class="primario" id="audio-boton" type="button" hidden>Permitir el micrófono</button>
   </div>
 </div>
+<div class="velo" id="velo-codigo" hidden role="dialog" aria-modal="true" aria-labelledby="codigo-titulo">
+  <div class="tarjeta">
+    <h2 id="codigo-titulo">Código del profesor</h2>
+    <p>Sólo tu profesor puede quitar salidas. Cada intento queda registrado en su lista.</p>
+    <p class="nota-campo" id="codigo-salidas"></p>
+    <input type="text" id="codigo-campo" inputmode="numeric" autocomplete="off" autocapitalize="off" spellcheck="false" maxlength="20" aria-label="Código del profesor">
+    <p class="error" id="codigo-error" hidden></p>
+    <div class="acciones">
+      <button class="secundario" id="codigo-una" type="button">Quitar 1 salida</button>
+      <button class="primario" id="codigo-todas" type="button">Dejar en 0</button>
+    </div>
+    <button class="secundario" id="codigo-cerrar" type="button">Cancelar</button>
+  </div>
+</div>
 <div class="velo" id="velo-reinicio" hidden role="alertdialog" aria-modal="true" aria-labelledby="reinicio-titulo">
   <div class="tarjeta">
     <h2 id="reinicio-titulo">¿Reiniciar el cuestionario?</h2>
@@ -434,7 +450,7 @@ button:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-
       inicio: null, r: PREG.map(function () { return null; }),
       a: CIERRE.map(function () { return ''; }), g: lleno(NB, 0), leido: lleno(NB, false),
       orden: null, constancia: null, avisoPendiente: false, error: '', confirmar: false,
-      historial: [], numero: 1, confirmarRehacer: false, audifonos: 0
+      historial: [], numero: 1, confirmarRehacer: false, audifonos: 0, quitadas: 0
     };
   }
   function maxIntentos() { return Math.max(1, Number(L && L.intentos) || 1); }
@@ -452,7 +468,7 @@ button:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-
         version: L.version || '', intento: S.intento, nombre: S.nombre, grupo: S.grupo,
         salidas: S.salidas, inicio: S.inicio, r: S.r, a: S.a, g: S.g, leido: S.leido, b: S.b,
         vista: S.vista, orden: S.orden, constancia: S.constancia, avisoPendiente: S.avisoPendiente,
-        historial: S.historial, numero: S.numero, audifonos: S.audifonos
+        historial: S.historial, numero: S.numero, audifonos: S.audifonos, quitadas: S.quitadas
       }));
     } catch (e) { }
   }
@@ -573,7 +589,7 @@ button:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-
   function revisarVentana() {
     var area = window.innerWidth * window.innerHeight;
     if (area > areaMayor) areaMayor = area;
-    var vigilar = activo() && VIGILADAS.indexOf(S.vista) >= 0 && esTactil();
+    var vigilar = activo() && VIGILADAS.indexOf(S.vista) >= 0 && esTactil() && !dialogoProfesor;
     if (!vigilar) { if (reducida) quitarCubierta(); return; }
     var pantalla = (screen.width || 0) * (screen.height || 0);
     var chica = area < 0.6 * areaMayor || (pantalla > 0 && area < 0.4 * pantalla);
@@ -622,7 +638,7 @@ button:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-
   }
   function revisarFoco() {
     if (!vistoFoco || fueraPorFoco || !activo() || VIGILADAS_FOCO.indexOf(S.vista) < 0) return;
-    if (conAudifonos || faltaMicro || Date.now() < calmaHasta) return;   // micrófono, audífonos o lectura tapada
+    if (conAudifonos || faltaMicro || dialogoProfesor || Date.now() < calmaHasta) return;   // micrófono, audífonos, lectura tapada o código del profesor
     if (document.visibilityState !== 'visible') return;   // eso ya lo cuenta la salida normal
     if (tieneFoco()) return;
     fueraPorFoco = true;
@@ -827,7 +843,7 @@ button:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-
     var d = {
       id: idNuevo(), evento: evento, prueba: PRUEBA, clave: L.clave, titulo: L.titulo, materia: L.materia || '',
       nombre: S.nombre, grupo: S.grupo, numero: S.numero || 1, intento: S.intento,
-      salidas: S.salidas, audifonos: S.audifonos || 0,
+      salidas: S.salidas, audifonos: S.audifonos || 0, quitadas: S.quitadas || 0,
       inicio: S.inicio ? hora(new Date(S.inicio)) : '', navegador: navigator.userAgent
     };
     Object.keys(extra || {}).forEach(function (k) { d[k] = extra[k]; });
@@ -860,6 +876,62 @@ button:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-
       .catch(function () { enviando = false; setTimeout(enviarPendientes, 15000); });
   }
   window.addEventListener('online', enviarPendientes);
+
+  // ── Código del profesor ───────────────────────────────────────────────────
+  // Idea de Adrián (19 nov 2026): cuando una salida no fue culpa del alumno (por ejemplo, arreglar el
+  // micrófono), el profesor toca el recuadro de "Salidas" en el celular del alumno, escribe su código y quita
+  // una salida o las deja en 0. El código NO está en esta página (el repositorio es público): lo revisa el
+  // Apps Script contra la pestaña "Profesor" de la hoja, bloquea tras 5 intentos malos y anota cada intento.
+  var dialogoProfesor = false;
+  function abrirCodigo() {
+    if (!activo()) return;
+    dialogoProfesor = true;
+    document.getElementById('codigo-campo').value = '';
+    document.getElementById('codigo-error').hidden = true;
+    document.getElementById('codigo-salidas').textContent = 'Salidas en este intento: ' + S.salidas + '.';
+    document.getElementById('velo-codigo').hidden = false;
+    document.getElementById('codigo-campo').focus();
+  }
+  function cerrarCodigo() {
+    document.getElementById('velo-codigo').hidden = true;
+    try { document.activeElement && document.activeElement.blur(); } catch (e) { }
+    // el teclado tarda en cerrarse: mientras, el tamaño de la ventana no cuenta como pantalla dividida
+    setTimeout(function () { dialogoProfesor = false; }, 1200);
+  }
+  function usarCodigoProfesor(accion) {
+    var codigo = document.getElementById('codigo-campo').value.trim();
+    var err = document.getElementById('codigo-error');
+    if (!codigo) { err.textContent = 'Escribe el código.'; err.hidden = false; return; }
+    err.textContent = 'Revisando…'; err.hidden = false;
+    var d = {
+      id: idNuevo(), evento: 'codigo', accion: accion, codigoProfesor: codigo, prueba: PRUEBA, clave: L.clave,
+      titulo: L.titulo, materia: L.materia || '', nombre: S.nombre, grupo: S.grupo, numero: S.numero || 1,
+      intento: S.intento, salidas: S.salidas, audifonos: S.audifonos || 0, quitadas: S.quitadas || 0,
+      inicio: S.inicio ? hora(new Date(S.inicio)) : '', navegador: navigator.userAgent
+    };
+    fetch(HOJA, { method: 'POST', body: JSON.stringify(d), headers: { 'Content-Type': 'text/plain;charset=utf-8' } })
+      .then(function (r) { return r.json(); })
+      .then(function (res) {
+        if (res && res.ok && typeof res.salidas === 'number') {
+          S.quitadas = (S.quitadas || 0) + Math.max(0, S.salidas - res.salidas);
+          S.salidas = res.salidas;
+          S.avisoPendiente = false;
+          guardarLocal();
+          pintarBarra();
+          cerrarCodigo();
+          return;
+        }
+        err.textContent = res && res.error === 'bloqueado' ? 'Demasiados intentos incorrectos. Espera media hora.'
+          : res && res.error === 'sin-codigo' ? 'El profesor todavía no tiene código en su hoja.'
+          : 'Código incorrecto. El intento quedó registrado en la lista del profesor.';
+        err.hidden = false;
+      })
+      .catch(function () { err.textContent = 'No hay conexión. Inténtalo otra vez.'; err.hidden = false; });
+  }
+  document.getElementById('pastilla').addEventListener('click', abrirCodigo);
+  document.getElementById('codigo-una').addEventListener('click', function () { usarCodigoProfesor('una'); });
+  document.getElementById('codigo-todas').addEventListener('click', function () { usarCodigoProfesor('todas'); });
+  document.getElementById('codigo-cerrar').addEventListener('click', cerrarCodigo);
 
   // ── Que no se pueda copiar ────────────────────────────────────────────────
   function esCampo(t) { return t && /^(INPUT|TEXTAREA|SELECT)$/.test(t.tagName); }
@@ -1325,7 +1397,7 @@ button:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-
           salidas: salidas, base: cal.base, menos: cal.menos, calificacion: cal.final,
           codigo: h.slice(0, 6).toUpperCase(), regresos: S.g.reduce(function (a, b) { return a + b; }, 0),
           abiertas: CIERRE.map(function (q, i) { return { q: q.q, r: (S.a[i] || '').trim() }; }),
-          prueba: PRUEBA, numero: numero
+          prueba: PRUEBA, numero: numero, quitadas: S.quitadas || 0
         };
         S.constancia.envioId = registrar('envio', {
           aciertos: aciertos, reactivos: PREG.length, base: cal.base, menos: cal.menos, calificacion: cal.final,
@@ -1357,6 +1429,7 @@ button:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-
     S.constancia = null;
     S.avisoPendiente = false;
     S.audifonos = 0;
+    S.quitadas = 0;
     mantenerPantalla();
     ir('texto');
     registrar('inicio');
@@ -1383,7 +1456,8 @@ button:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-
       el('dt', { text: 'Envió' }), el('dd', { text: c.envio || '' }),
       el('dt', { text: 'Aciertos' }), el('dd', { text: c.aciertos + ' de ' + c.reactivos }),
       el('dt', { text: 'Salidas' }),
-      el('dd', { text: c.salidas + (c.menos > 0 ? ' (−' + puntos(c.menos) + ')' : '') }),
+      el('dd', { text: c.salidas + (c.menos > 0 ? ' (−' + puntos(c.menos) + ')' : '') +
+        (c.quitadas > 0 ? ' · ' + (c.quitadas === 1 ? '1 quitada' : c.quitadas + ' quitadas') + ' por el profesor' : '') }),
       el('dt', { text: 'Código' }), el('dd', { class: 'codigo', text: c.codigo || '' })
     ]);
 
@@ -1520,7 +1594,7 @@ button:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-
     S = estadoNuevo();
     var g = (hot && hot.clave === L.clave && hot.S) ? hot.S : cargarLocal();
     if (g && g.intento && (!g.version || g.version === (L.version || ''))) {
-      ['intento', 'nombre', 'grupo', 'b', 'orden', 'constancia', 'inicio', 'numero', 'audifonos'].forEach(function (k) { if (g[k] !== undefined && g[k] !== null) S[k] = g[k]; });
+      ['intento', 'nombre', 'grupo', 'b', 'orden', 'constancia', 'inicio', 'numero', 'audifonos', 'quitadas'].forEach(function (k) { if (g[k] !== undefined && g[k] !== null) S[k] = g[k]; });
       if (Array.isArray(g.historial)) S.historial = g.historial;
       S.salidas = Number(g.salidas) || 0;
       if (Array.isArray(g.r) && g.r.length === PREG.length) S.r = g.r;
