@@ -328,6 +328,9 @@ button:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-
 .ayuda .ayuda-titulo { font-weight: 700; }
 .boton-micro { display: flex; justify-content: center; padding: 4px 0 6px; }
 #codigo-campo { font-size: 1.4rem; letter-spacing: 0.3em; text-align: center; -webkit-text-security: disc; }
+.barra .donde.reloj-alerta { color: var(--alerta); }
+.barra .donde.reloj-mal { color: var(--mal); }
+.toast-tiempo { position: fixed; left: 16px; right: 16px; bottom: max(16px, env(safe-area-inset-bottom, 0px)); z-index: 26; padding: 12px 14px; border-radius: 10px; background: var(--tinta); color: var(--papel); font-weight: 700; text-align: center; box-shadow: 0 4px 16px rgba(0, 0, 0, 0.25); }
 .velo h2 { font-size: 1.25rem; }
 
 .centro { text-align: center; color: var(--tenue); padding: 40px 0; }
@@ -406,6 +409,7 @@ button:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-
     <button class="secundario" id="codigo-cerrar" type="button">Cancelar</button>
   </div>
 </div>
+<div class="toast-tiempo" id="toast-tiempo" hidden role="status" aria-live="assertive"></div>
 <div class="velo" id="velo-reinicio" hidden role="alertdialog" aria-modal="true" aria-labelledby="reinicio-titulo">
   <div class="tarjeta">
     <h2 id="reinicio-titulo">¿Reiniciar el cuestionario?</h2>
@@ -965,6 +969,64 @@ button:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-
       })
       .catch(function () { err.textContent = 'No hay conexión. Inténtalo otra vez.'; err.hidden = false; });
   }
+  // ── Cronómetro ────────────────────────────────────────────────────────────
+  // Pedido de Adrián (19 nov 2026): si la lectura trae "tiempo" (minutos), el primer intento tiene ese tiempo y
+  // el segundo (también el que se usa al tocar "Reiniciar") el 60 %. Corre con el reloj real desde "Empezar":
+  // salir, recargar o apagar la pantalla no lo detiene. Se ve siempre en la barra (en lugar de "Parte N de M"),
+  // avisa a los 5 minutos y al minuto, y al terminarse envía solo lo contestado (lo que falte cuenta como error).
+  var avisosTiempo = {};
+  function limiteMs() {
+    var t = Number(L && L.tiempo) || 0;
+    if (t <= 0 || !S) return 0;
+    return Math.round(t * 60000 * ((S.numero || 1) > 1 ? 0.6 : 1));
+  }
+  function restanteMs() { var l = limiteMs(); return l && S.inicio ? S.inicio + l - Date.now() : l; }
+  function reloj(ms) {
+    var s = Math.max(0, Math.ceil(ms / 1000));
+    return Math.floor(s / 60) + ':' + ('0' + (s % 60)).slice(-2);
+  }
+  function duracion(ms) {
+    var s = Math.round(ms / 1000), m = Math.floor(s / 60), r = s % 60;
+    var t = m ? (m === 1 ? '1 minuto' : m + ' minutos') : '';
+    if (r) t += (t ? ' y ' : '') + (r === 1 ? '1 segundo' : r + ' segundos');
+    return t || '0 segundos';
+  }
+  function textoReloj() { return limiteMs() && activo() ? '⏱ ' + reloj(restanteMs()) : ''; }
+  function avisoTiempo(texto) {
+    var t = document.getElementById('toast-tiempo');
+    t.textContent = texto;
+    t.hidden = false;
+    clearTimeout(avisoTiempo.t);
+    avisoTiempo.t = setTimeout(function () { t.hidden = true; }, 6000);
+    try { if (navigator.vibrate) navigator.vibrate(200); } catch (e) { }
+  }
+  function revisarTiempo() {
+    var d = document.getElementById('donde');
+    if (!limiteMs() || !activo()) { d.className = 'donde'; return; }
+    var r = restanteMs();
+    d.textContent = textoReloj();
+    d.className = 'donde' + (r <= 60000 ? ' reloj-mal' : r <= 300000 ? ' reloj-alerta' : '');
+    var k = S.intento;
+    if (r <= 300000 && r > 60000 && limiteMs() > 300000 && !avisosTiempo[k + ':5']) {
+      avisosTiempo[k + ':5'] = true;
+      avisoTiempo('Te quedan 5 minutos.');
+    }
+    if (r <= 60000 && r > 0 && !avisosTiempo[k + ':1']) {
+      avisosTiempo[k + ':1'] = true;
+      avisoTiempo('Te queda 1 minuto. Al terminarse, se envía solo lo que tengas contestado.');
+    }
+    if (r <= 0) terminarPorTiempo();
+  }
+  function terminarPorTiempo() {
+    if (!activo() || S.vista === 'enviando') return;
+    S.porTiempo = true;
+    ['velo', 'velo-reinicio', 'velo-codigo', 'cubierta'].forEach(function (id) { document.getElementById(id).hidden = true; });
+    fueraPorFoco = false;
+    reducida = false;
+    enviar();
+  }
+  setInterval(function () { if (S) revisarTiempo(); }, 1000);
+
   document.getElementById('codigo-una').addEventListener('click', function () { usarCodigoProfesor('una'); });
   document.getElementById('codigo-todas').addEventListener('click', function () { usarCodigoProfesor('todas'); });
   document.getElementById('codigo-cerrar').addEventListener('click', cerrarCodigo);
@@ -1032,7 +1094,7 @@ button:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-
     else if (S.vista === 'cierre') donde = 'Para terminar';
     else if (S.vista === 'revisar') donde = 'Revisión';
     if ((S.numero || 1) > 1) donde = 'Intento ' + S.numero + ' · ' + donde;
-    document.getElementById('donde').textContent = donde;
+    document.getElementById('donde').textContent = textoReloj() || donde;
     var past = document.getElementById('pastilla');
     var m = menos(S.salidas);
     past.textContent = 'Salidas: ' + S.salidas + (m > 0 ? ' · −' + puntos(m) : '');
@@ -1104,7 +1166,8 @@ button:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-
       el('div', { class: 'datos' }, [
         el('span', { class: 'dato', text: NB + (NB === 1 ? ' parte' : ' partes') }),
         el('span', { class: 'dato', text: PREG.length + ' preguntas' }),
-        CIERRE.length ? el('span', { class: 'dato', text: CIERRE.length + (CIERRE.length === 1 ? ' respuesta abierta' : ' respuestas abiertas') }) : null
+        CIERRE.length ? el('span', { class: 'dato', text: CIERRE.length + (CIERRE.length === 1 ? ' respuesta abierta' : ' respuestas abiertas') }) : null,
+        L.tiempo > 0 ? el('span', { class: 'dato', text: '⏱ ' + duracion(L.tiempo * 60000) }) : null
       ])
     ]);
   }
@@ -1120,6 +1183,10 @@ button:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-
         el('li', null, [el('b', { text: 'No salgas de esta pantalla. ' }),
           'Cambiar de app o de pestaña, usar otra app con la lectura en ventana flotante, en miniatura o en pantalla dividida, recargar la página o dejar que se apague la pantalla cuenta como salida.' +
           (p.cada > 0 ? ' Cada ' + p.cada + ' salidas se te resta ' + puntos(p.resta) + ' de la calificación.' : '')]),
+        L.tiempo > 0 ? el('li', null, [el('b', { text: 'Tienes ' + duracion(L.tiempo * 60000) + '. ' }),
+          'El tiempo corre desde que tocas "Empezar la lectura" y no se detiene si sales o recargas.' +
+          (maxIntentos() > 1 ? ' El segundo intento tiene ' + duracion(L.tiempo * 36000) + '.' : '') +
+          ' Al terminarse, la lectura se envía sola con lo que tengas contestado; lo que falte cuenta como error.']) : null,
         el('li', null, [el('b', { text: 'Sin audífonos ni reloj inteligente. ' }),
           'Antes de empezar, apaga el Bluetooth de tu celular. Al empezar, la página te pide el micrófono: elige "Permitir mientras visito el sitio". No graba nada, sólo revisa si hay algo conectado. Mientras haya audífonos o un reloj conectados, la lectura se tapa.']),
         el('li', null, [el('b', { text: 'El texto no se puede copiar. ' }),
@@ -1167,6 +1234,7 @@ button:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-
         S.orden = ordenPara(S.intento);
         S.b = 0;
         S.audifonos = 0;
+        S.porTiempo = false;
         mantenerPantalla();
         ir('texto');
         registrar('inicio');
@@ -1433,9 +1501,9 @@ button:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-
           salidas: salidas, base: cal.base, menos: cal.menos, calificacion: cal.final,
           codigo: h.slice(0, 6).toUpperCase(), regresos: S.g.reduce(function (a, b) { return a + b; }, 0),
           abiertas: CIERRE.map(function (q, i) { return { q: q.q, r: (S.a[i] || '').trim() }; }),
-          prueba: PRUEBA, numero: numero, quitadas: S.quitadas || 0
+          prueba: PRUEBA, numero: numero, quitadas: S.quitadas || 0, porTiempo: !!S.porTiempo
         };
-        S.constancia.envioId = registrar('envio', {
+        S.constancia.envioId = registrar(S.porTiempo ? 'Envío por tiempo' : 'envio', {
           aciertos: aciertos, reactivos: PREG.length, base: cal.base, menos: cal.menos, calificacion: cal.final,
           envio: envio, codigo: S.constancia.codigo, regresos: S.constancia.regresos,
           abiertas: S.constancia.abiertas.map(function (x, i) { return (i + 1) + '. ' + x.r; }).join('\n')
@@ -1466,6 +1534,7 @@ button:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-
     S.avisoPendiente = false;
     S.audifonos = 0;
     S.quitadas = 0;
+    S.porTiempo = false;
     mantenerPantalla();
     ir('texto');
     registrar('inicio');
@@ -1550,6 +1619,7 @@ button:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-
         el('p', { class: c.guardada ? 'consejo' : 'error', text: c.guardada
           ? 'Tus resultados ya llegaron a la lista de tu profesor.'
           : 'Guardando tus resultados en la lista de tu profesor… Si no tienes internet, se mandan solos cuando vuelvas a abrir esta página.' }),
+        c.porTiempo ? el('p', { class: 'consejo', text: 'Se acabó el tiempo: se envió lo que alcanzaste a contestar.' }) : null,
         el('div', { class: 'portada' }, [
           c.materia ? el('p', { class: 'ceja', text: c.materia }) : null,
           el('h1', { text: c.titulo || '' })
