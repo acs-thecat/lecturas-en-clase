@@ -317,6 +317,8 @@ button:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-
 }
 .cubierta .tarjeta { max-width: 26rem; width: 100%; border: 2px solid var(--mal); }
 #cubierta-audio { z-index: 31; }
+html:has(body > .cubierta:not([hidden])) { overflow: hidden; }
+body:has(> .cubierta:not([hidden])) > #app, body:has(> .cubierta:not([hidden])) > .barra { visibility: hidden; }
 .leer p, .leer li, .tarjeta p, .tarjeta li, .portada .fuente, .enunciado, .nota-campo, .instruccion {
   text-align: justify;
   -webkit-hyphens: auto;
@@ -590,13 +592,24 @@ button:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-
       return window.matchMedia('(pointer: coarse)').matches && Math.min(screen.width, screen.height) < 1100;
     } catch (e) { return false; }
   }
+  var formaMayor = 0;
+  function proporcion(w, h) { return w > 0 && h > 0 ? Math.min(w, h) / Math.max(w, h) : 0; }
+  function medidaVentana() {
+    var de = document.documentElement;
+    return { w: de.clientWidth || window.innerWidth, h: de.clientHeight || window.innerHeight };
+  }
   function revisarVentana() {
-    var area = window.innerWidth * window.innerHeight;
-    if (area > areaMayor) areaMayor = area;
+    var m = medidaVentana();
+    var area = m.w * m.h;
+    if (area > areaMayor) { areaMayor = area; formaMayor = proporcion(m.w, m.h); }
     var vigilar = activo() && VIGILADAS.indexOf(S.vista) >= 0 && esTactil() && !dialogoProfesor;
     if (!vigilar) { if (reducida) quitarCubierta(); return; }
-    var pantalla = (screen.width || 0) * (screen.height || 0);
-    var chica = area < 0.6 * areaMayor || (pantalla > 0 && area < 0.4 * pantalla);
+    var escala = window.visualViewport ? window.visualViewport.scale : 1;
+    if (escala > 1.05) return;   // acercó con dos dedos: no es pantalla dividida
+    var forma = proporcion(m.w, m.h);
+    var formaPantalla = proporcion(screen.width, screen.height);
+    var chica = (area < 0.6 * areaMayor && forma - formaMayor > 0.2) ||
+      (formaPantalla > 0 && forma - formaPantalla > 0.3);
     if (chica && !reducida) {
       reducida = true;
       S.salidas++;
@@ -619,7 +632,9 @@ button:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-
     document.getElementById('cubierta-texto').textContent = dividida
       ? 'Vuelve a pantalla completa para seguir con la lectura. Mientras la pantalla esté dividida o en una ventana chica, el texto y las preguntas no se ven.'
       : 'Estás usando otra app o ventana mientras la lectura sigue abierta (ventana flotante, miniatura o pantalla dividida). Toca aquí para seguir con la lectura.';
-    document.getElementById('cubierta-nota').textContent = 'Esto cuenta como una salida.';
+    var md = medidaVentana();
+    document.getElementById('cubierta-nota').textContent = 'Esto cuenta como una salida.' + (dividida
+      ? ' (' + md.w + '×' + md.h + ' de ' + screen.width + '×' + screen.height + ')' : '');
     document.getElementById('cubierta').hidden = false;
   }
 
