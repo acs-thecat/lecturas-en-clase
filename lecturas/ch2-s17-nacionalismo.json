@@ -1,0 +1,352 @@
+{
+ "clave": "ch2-s17-nacionalismo",
+ "materia": "Conciencia Histórica II",
+ "titulo": "Sesión 17, lectura: la invención de lo \"típico\" mexicano (1920-1940)",
+ "descripcion": "Cómo los gobiernos posrevolucionarios usaron lo popular para crear una identidad nacional, y cómo terminó en estereotipos. El texto viene en cuatro partes, con cinco preguntas cada una. Es individual.",
+ "fuente": "Ricardo Pérez Montfort, \"Un nacionalismo sin nación aparente (la fabricación de lo 'típico' mexicano 1920-1950)\", Política y Cultura, núm. 12, UAM-Xochimilco, 1999, pp. 177-194. PDF de acceso libre: https://polcul.xoc.uam.mx/index.php/polcul/article/download/231/228",
+ "grupos": [
+  "5°A FM",
+  "5°B QB",
+  "5°C EA",
+  "5°D HS"
+ ],
+ "abierta": true,
+ "ventana": {
+  "desde": null,
+  "hasta": null
+ },
+ "escala": {
+  "min": 1,
+  "max": 10,
+  "redondeo": "arriba"
+ },
+ "penalizacion": {
+  "cada": 3,
+  "resta": 1
+ },
+ "intentos": 2,
+ "cuenta": "mejor",
+ "tiempo": 48,
+ "bloques": [
+  {
+   "titulo": "El \"pueblo\" de la Revolución",
+   "texto": [
+    {
+     "t": "p",
+     "x": "La inmensa carga popular que trajo consigo el movimiento revolucionario replanteó el papel que \"el pueblo\" desempeñaría en los proyectos de nación, surgidos durante la contienda de 1910-1920 y en los años subsiguientes. El discurso político identificó al \"pueblo\" como el protagonista esencial de la Revolución, y destinatario de los principales beneficios de dicho movimiento. En claro contraste con lo que durante el porfiriato se pretendió fuera \"el pueblo\", los revolucionarios reconocieron que éste se encontraba sobre todo entre los sectores mayoritarios y marginados. El \"pueblo\" se concibió entonces como el territorio de \"los humildes\", de \"los pobres\", de las mayorías, mucho más ligadas éstas a los espacios rurales que a los urbanos. En otras palabras, quienes llenaban el contenido de la palabra pueblo eran principalmente los campesinos, indios, rancheros y, muy ocasionalmente, los proletarios."
+    },
+    {
+     "t": "p",
+     "x": "Tanto en los ámbitos intelectuales como en los artísticos, en los elitistas y en los más comunes y corrientes, esa concepción tan amplia de lo popular tuvo infinidad de variantes. Definir con cierta exactitud aquel sustantivo: \"pueblo\", planteaba un problema bastante severo. Lo mismo sucedía con el adjetivo: \"mexicano\". Al hablar del \"pueblo mexicano\" el llamado \"nacionalismo revolucionario\", empujaba hacia una nueva identificación y valoración de lo propio, negando y diferenciándose de lo extraño o extranjero. En su tono político y en su expresión cultural intentaba exhibir ciertas características particulares, raciales, históricas o \"esenciales\" de la 'mexicanidad'. Para ello abrió un inmenso abanico de argumentos; desde los 'científicos' hasta los circunstanciales. Como es sabido, la construcción de la identidad nacional es un proceso muy complicado \"...constituido por prácticas sociales contradictorias tanto al interior de los grupos humanos como en su correlación con otros grupos sociales. Es decir, la identidad no es una esencia sino un proceso relacional...\" al que se le atribuyen condiciones particulares que unen los espacios de lo espiritual con lo material. Esto complicó enormemente los intentos de definición de aquel sujeto. La pluralidad y complejidad de ese \"pueblo mexicano\" saltó a la vista inmediatamente."
+    },
+    {
+     "t": "p",
+     "x": "Así, el \"ser\" del mexicano preocupó a filósofos y a literatos, se regodeó en las manifestaciones populares y en el arte 'culto', se plasmó en los colores de los artistas plásticos y sonó en la naciente radio; formó parte de los argumentos diplomáticos y buscó la creación de estereotipos en el cine y, en general, dio mucho qué decir en el complicado mundo de la cultura nacional. Políticos, escritores y artistas se lanzaron a un sinnúmero de polémicas, que tenían como aparentes temas centrales la revolución, nacionalidad, historia, cultura o raza, pero cuyo primordial afán parecía inclinarse por darle un sentido a eso que llamaban \"el pueblo propiamente mexicano\"."
+    }
+   ],
+   "preguntas": [
+    {
+     "q": "Según el texto, ¿quiénes llenaban principalmente el contenido de la palabra \"pueblo\"?",
+     "ops": [
+      "Los obreros de las fábricas de la ciudad",
+      "Los campesinos, indios y rancheros",
+      "Las clases medias de la capital",
+      "Los hacendados y los comerciantes"
+     ],
+     "k": "afd0f5e5ad029d27"
+    },
+    {
+     "q": "A diferencia de lo que se pretendió durante el porfiriato, ¿cómo se concibió al \"pueblo\" después de la Revolución?",
+     "ops": [
+      "Como los ciudadanos con propiedades",
+      "Como la élite educada en Europa",
+      "Como el territorio de los humildes y los pobres",
+      "Como los habitantes de las ciudades"
+     ],
+     "k": "e860df64e5751e71"
+    },
+    {
+     "q": "Al hablar del \"pueblo mexicano\", ¿de qué buscaba diferenciarse el \"nacionalismo revolucionario\"?",
+     "ops": [
+      "De lo extraño o extranjero",
+      "De lo indígena y lo rural",
+      "De lo popular y lo humilde",
+      "De lo antiguo y lo colonial"
+     ],
+     "k": "5282874f23f31d88"
+    },
+    {
+     "q": "Según el texto, definir con exactitud el sustantivo \"pueblo\" era un problema severo. ¿Con qué otra palabra sucedía lo mismo?",
+     "ops": [
+      "Con el sustantivo \"nación\"",
+      "Con el adjetivo \"revolucionario\"",
+      "Con el sustantivo \"Estado\"",
+      "Con el adjetivo \"mexicano\""
+     ],
+     "k": "ce2a4c0f82900c16"
+    },
+    {
+     "q": "Políticos, escritores y artistas se lanzaron a muchas polémicas. Según el texto, ¿cuál era su afán principal?",
+     "ops": [
+      "Discutir la revolución y la historia",
+      "Darle un sentido a \"el pueblo propiamente mexicano\"",
+      "Decidir quién gobernaría después de Obregón",
+      "Conseguir cargos en el gobierno"
+     ],
+     "k": "ba44c9acae29df28"
+    }
+   ]
+  },
+  {
+   "titulo": "Vasconcelos y el arte nacionalista (años veinte)",
+   "texto": [
+    {
+     "t": "p",
+     "x": "Durante los regímenes de Alvaro Obregón y Plutarco Elias Calles el proyecto educativo oficial, establecido y comandado en un inicio por José Vasconcelos, se instauraron los llamados nacionalismos culturales mismos que también fueron tema recurrente en los programas educativos posrevolucionarios. Definir al país y a su 'pueblo', estudiar, explicar y describir sus más diversas y muy propias manifestaciones, fue una tarea que unió a artistas e intelectuales con lo que ellos identificaban como las mayorías. La identificación de lo popular, lo mexicano y lo nacional, estuvo pues en manos de una élite centralista y con no pocos vínculos con el poder económico y político del país."
+    },
+    {
+     "t": "p",
+     "x": "Estos nacionalismos que caracterizaron esta primera relación entre élites y sectores populares fueron cabalmente descritos por Pedro Henríquez Ureña, en 1925, al hacer un primer balance de los aportes culturales de la Revolución mexicana. \"Existe hoy el deseo de preferir los materiales nativos y los temas nacionales en las artes y en las ciencias...\", decía; y ponía varios ejemplos: \"...el dibujo mexicano que desde las altas creaciones del genio indígena en su civilización antigua ha seguido viviendo hasta nuestros días a través de las preciosas artes del pueblo...\" quedó representado en los murales de Diego Rivera y compañía; \"...los cantos populares [que] todo el mundo canta, así como se deleita con la alfarería y los tejidos populares...\" fueron utilizados por Manuel M. Ponce y Carlos Chávez Ramírez (\"...compositor joven que ha sabido plantear el problema de la música mexicana desde su base...\"); y los dramas sintéticos con asunto rural de Eduardo Villaseñor y de Rafael Saavedra, quienes habían \"...realizado la innovación de escribir para indios y hacerlos actores...\", pretendían revivir las tradiciones literarias de aquel \"pueblo mexicano\"."
+    },
+    {
+     "t": "p",
+     "x": "Así, el arte creado por estas élites educadas en Europa o en los centros de estudios superiores urbanos, abrevaba orgullosamente en la vertiente popular e indígena mexicana, y afirmaba su condición \"nacionalista\". Esto implicaba, en parte, un reconocimiento de los aportes reales de dicho \"pueblo mexicano\" en materia cultural, y por lo tanto también sentaba las bases para realizar un intento de repensar la historia y la cultura nacional. Este reconocimiento, sin embargo, quedaba ligado de manera prácticamente implícita a los proyectos de unificación y justificación del grupo en el poder, cuyo fin radicaba en los afanes modernizadores e industrializadores del país. En el fondo, el reconocimiento de lo popular traía consigo la necesidad de identificar claramente al sujeto -el pueblo- que serviría de legitimación discursiva en los programas de gobierno."
+    },
+    {
+     "t": "p",
+     "x": "Tradicionalmente desdeñada por las academias, la cultura popular adquirió de esa manera una fuerza inusitada en los derroteros del arte y la literatura mexicanos. Pero hubo la intención de interpretarla, rehacerla, inventarla con fines más ligados a los intereses políticos o, si se quiere, pragmáticos del momento que a los del conocimiento, el arte o la reflexión."
+    },
+    {
+     "t": "p",
+     "x": "Más que un saber se estableció un 'deber ser' para ese pueblo mexicano que rápidamente se separó de las esferas de lo real para pasar al espacio de lo ideal. Víctor Díaz Arciniega lo explica de la siguiente manera: \"La consolidación del Estado como prioridad política provoca el enfrentamiento entre las concepciones de una cultura humanística y una cultura política, no obstante que ambas persiguen metas afines: crear una Cultura Nacional y promover el desarrollo del país, como se aprecia en la revaloración del pasado y en la recuperación de los usos y costumbres populares, dirigido todo a fortalecer la tradición y a mejorar la producción de bienes...\""
+    },
+    {
+     "t": "p",
+     "x": "En el fondo de lo que se trataba era que la producción cultural promovida por el gobierno sirviera por un lado para la generación de una unidad nacional basada en un discurso nacionalista y, por el otro, que le proporcione bienes que permitieran un desarrollo capaz de explotar las variedades culturales populares del país."
+    }
+   ],
+   "preguntas": [
+    {
+     "q": "¿Quién estableció y comandó en un inicio el proyecto educativo oficial?",
+     "ops": [
+      "Pedro Henríquez Ureña",
+      "Plutarco Elias Calles",
+      "José Vasconcelos",
+      "Diego Rivera"
+     ],
+     "k": "c990ea8c79897769"
+    },
+    {
+     "q": "Según el texto, ¿en manos de quién estuvo la identificación de lo popular, lo mexicano y lo nacional?",
+     "ops": [
+      "De una élite centralista ligada al poder económico y político",
+      "De las comunidades campesinas e indígenas",
+      "De los gobiernos de cada estado",
+      "De los maestros de las escuelas rurales"
+     ],
+     "k": "cbbe3bedeaa1fb20"
+    },
+    {
+     "q": "Según Pedro Henríquez Ureña, en 1925, ¿qué deseo existía en las artes y en las ciencias?",
+     "ops": [
+      "Imitar los modelos de Europa",
+      "Preferir los materiales nativos y los temas nacionales",
+      "Dejar atrás las artes del pueblo",
+      "Seguir la técnica de Estados Unidos"
+     ],
+     "k": "8bd4f614679c2cc5"
+    },
+    {
+     "q": "Según el texto, ¿quiénes utilizaron los cantos populares?",
+     "ops": [
+      "Diego Rivera y José Vasconcelos",
+      "Eduardo Villaseñor y Rafael Saavedra",
+      "Pedro Henríquez Ureña y Víctor Díaz Arciniega",
+      "Manuel M. Ponce y Carlos Chávez Ramírez"
+     ],
+     "k": "70b807bab6d7275a"
+    },
+    {
+     "q": "Según el texto, ¿para qué debía servir, en el fondo, la producción cultural promovida por el gobierno?",
+     "ops": [
+      "Para la unidad nacional y para el desarrollo del país",
+      "Para recuperar el arte europeo del siglo XIX",
+      "Para que el pueblo eligiera a sus gobernantes",
+      "Para atraer a artistas de otros países"
+     ],
+     "k": "89c9bf191b084822"
+    }
+   ]
+  },
+  {
+   "titulo": "Charros y chinas poblanas (años treinta)",
+   "texto": [
+    {
+     "t": "p",
+     "x": "Durante la siguiente década -los años treinta- muchos recursos de este afán reivindicativo de la cultura popular se gastaron rápidamente. Los regímenes posrevolucionarios no sólo habían patrocinado la mayoría de las actividades que pretendían estrechar la relación entre las expresiones artísticas de las élites y las de las mayorías, sino que se habían favorecido políticamente de tal unión; así le restaron autenticidad y mostraron ciertas convenciones que cada vez sabían más a demagogia. El resultado fue un impulso un tanto excesivo a ciertos estereotipos nacionales como el charro, la china poblana, el indito o el pelado con el fin de reducir a una dimensión más o menos gobernable, o si se quiere entendible, a esa multiplicidad que saltaba a la vista al momento de enunciar cualquier asunto relacionado con ese indefinible \"pueblo mexicano\". A pesar del variadísimo mosaico que presentaban las manifestaciones culturales regionales tanto indígenas como mestizas, la tendencia de las políticas oficiales así como de las corrientes artísticas más relevantes consistía en la aplicación de estos estereotipos, como reconocimiento que desde el centro político, cultural y económico se hacía de las diversas regiones del país. La asociación entre México y los charros, entre México y sus chinas poblanas, y entre México y su 'jarabe tapatío' y, peor aún, entre México y \"sus inditos\" terminó triunfando a la larga, y convirtió estas representaciones en elementos muy arraigados en el discurso nacionalista."
+    },
+    {
+     "t": "p",
+     "x": "Un factor que también contribuyó enormemente a la creación de esos estereotipos nacionales fue el vertiginoso crecimiento de los medios de comunicación masiva. El auge del teatro de revista en los años diez y veinte, seguido por el despegue de la radio y la industria cinematográfica mexicanas en los treinta y cuarenta, tuvieron mucho que ver en la creación de mitos y en la simplificación de aquella multiplicidad de imágenes que pretendía formar parte de la identidad nacional."
+    },
+    {
+     "t": "p",
+     "x": "En estos medios, los intereses comerciales y de justificación política estuvieron muy por encima de los culturales. Referirse al gusto y al sentir del \"pueblo mexicano\" fue un lugar común, cuyo afán se acercaba más a un pretexto para incrementar poderes económicos que a una preocupación por la 'cultura nacional'. A partir de una visión conservadora -la del rural o del hacendado- combinada con los intereses económicos de los empresarios de los nuevos medios de comunicación masiva, se creó una imagen del mexicano que se impuso tanto en el mercado interno como en el exterior, ayudado, desde luego, por los intereses políticos del momento. La invención de lo \"típico mexicano\" o de todo aquello que interesaba a \"la gran familia mexicana\" entraba en una de sus etapas más intensas."
+    },
+    {
+     "t": "p",
+     "x": "El clásico ejemplo de esta invención fue la indiscutible preponderancia del charro y la china poblana bailando el jarabe tapatío como típica imagen de \"mexicanidad\", consolidada por encima de otros cuadros o tipos regionales. Durante los años veinte se convocaron a las diversas regiones para presentarse con sus atuendos locales en la capital -los jarochos, los huastecos, los yucatecos, los de tierra caliente, los norteños, etc.- con el fin de comprender y promover la variedad de lo \"típico mexicano\". Pero esa multiplicidad fue, hasta cierto punto, negada por el afán de simplificar y teatralizar esas dimensiones simbólicas de la 'mexicanidad'. Su imposición en los ámbitos escolares hizo exclamar por ejemplo al mismísimo Moisés Sáenz en 1927 al asistir a una Escuela en el Mezquite San Luis Potosí: \"¡Con qué ardor y con qué gentileza bailan y cantan estos charros diminutos y estas chinas de Liliput!\""
+    },
+    {
+     "t": "p",
+     "x": "Para la segunda mitad de los años treinta la variedad de regiones y expresiones culturales locales pareció sucumbir ante la homogeneidad de los charros y chinas, cantores y bailadoras, tan típicamente representados en las películas como Allá en el Rancho Grande (1936), Ora Ponciano (1937) y ¡Ay Jalisco no te rajes! (1941), todas ellas de gran éxito en los mercados de habla hispana."
+    },
+    {
+     "t": "p",
+     "x": "En estas películas se seguía reconociendo tibiamente que \"lo mexicano\" era aquello relacionado con las mayorías. Esto es: que \"los campesinos eran la base del país\". No cabe duda que la imagen estereotípica reducida a aquel cuadro hegemónico -del charro y la china bailando el jarabe tapatío- manejado por los medios de comunicación masiva, empezaba a producir resquemor, sobre todo en ámbitos intelectuales. Esta homogeneidad produjo la monotonía característica del estereotipo de comprobado rendimiento comercial, al grado que ya en 1938 Rubén Salazar Mallén se quejaba diciendo:"
+    },
+    {
+     "t": "p",
+     "x": "\"La fiebre del folklore ha paralizado al cine (y al radio) mexicano, lo ha atado a una inexorable monotonía insistentemente señalada por los críticos y tan tenaz, sin embargo, que nada puede desplazarla... El charro, la china poblana, la canción quejumbrosa, o fanfarrona, todo eso son cosas que se repiten incesante, implacablemente. Se diría que México es, sobre todo, cantores, sombreros anchos y guitarras... Y es un error, un grande error. México no se caracteriza por eso, aunque, ciertamente, tales tipos dominan numéricamente en el país, bien que con rasgos muy distintos a los que nuestro cine les atribuye...\""
+    },
+    {
+     "t": "p",
+     "x": "Pero en los espacios populares urbanos, que poco a poco irían ocupando los crecientes sectores medios -a su vez los principales consumidores de este cuadro estereotípico- el charro, la china y el jarabe se convirtieron en cuadro clásico de lo \"típicamente mexicano\" en las celebraciones oficiales, sobre todo en las llamadas \"campañas nacionalistas\" que tuvieron su apogeo entre 1931 y 1933. No faltaban en los bailes escolares, ni en desfiles, y el cuadro típico aparecía como una referencia nostálgica a un México rural profundamente conservador, impuesto desde un territorio centralista."
+    }
+   ],
+   "preguntas": [
+    {
+     "q": "Según el texto, ¿a qué estereotipos nacionales se dio un impulso \"un tanto excesivo\" en los años treinta?",
+     "ops": [
+      "Al jarocho, el huasteco y el yucateco",
+      "A la adelita, el revolucionario y el cura",
+      "Al charro, la china poblana, el indito y el pelado",
+      "Al catrín, el obrero y el soldado"
+     ],
+     "k": "d5af1774b42ed9f3"
+    },
+    {
+     "q": "Según el texto, ¿qué factor contribuyó \"enormemente\" a crear esos estereotipos?",
+     "ops": [
+      "El crecimiento de los medios de comunicación masiva",
+      "La pintura de murales en edificios públicos",
+      "Los libros de texto de la Secretaría de Educación",
+      "Los viajes de los presidentes por el país"
+     ],
+     "k": "e233adf72a68eb86"
+    },
+    {
+     "q": "En los años veinte se convocó a las regiones a presentarse en la capital con sus atuendos. Según el texto, ¿qué pasó con esa variedad?",
+     "ops": [
+      "Se volvió el tema de las películas de los treinta",
+      "Fue negada, hasta cierto punto, por el afán de simplificar",
+      "Sustituyó al charro como imagen de México",
+      "Se prohibió en las celebraciones oficiales"
+     ],
+     "k": "76b02b1c087b258a"
+    },
+    {
+     "q": "¿Qué hizo exclamar a Moisés Sáenz en 1927, en una escuela de San Luis Potosí?",
+     "ops": [
+      "Ver a los alumnos pintar un mural",
+      "Oír a los alumnos recitar en náhuatl",
+      "Ver a los alumnos representar a Cuauhtémoc",
+      "Ver bailar y cantar a \"charros diminutos\" y \"chinas de Liliput\""
+     ],
+     "k": "b10875a026a112ab"
+    },
+    {
+     "q": "Según el texto, ¿cuándo tuvieron su apogeo las \"campañas nacionalistas\"?",
+     "ops": [
+      "Entre 1917 y 1920",
+      "Entre 1921 y 1923",
+      "Entre 1931 y 1933",
+      "Entre 1936 y 1938"
+     ],
+     "k": "ab3cd3b9c1160a78"
+    }
+   ]
+  },
+  {
+   "titulo": "El indio en el nacionalismo",
+   "texto": [
+    {
+     "t": "p",
+     "x": "Lógico es suponer que las referencias nacionalistas y sus discursos atacaran un fenómeno muy presente en aquellos años posrevolucionarios, aquél que de alguna forma mostraba que México era un país radicalmente distinto, no sólo a Estados Unidos sino a muchos otros países del orbe. Se trataba de su población indígena que no tardó en convertirse en tema fundamental de aquellos discursos y que abrirían una corriente importante de pensamiento y de acción gubernamental eventualmente identificada con el nombre de \"indigenismo\"."
+    },
+    {
+     "t": "p",
+     "x": "Para los intereses de este trabajo sólo me referiré a ciertos aspectos que abordan el llamado indigenismo de aquellos años. Y en particular se trata de algunas ideas y datos referentes a su reinterpretación o invención del pasado prehispánico en tres ámbitos de la cultura popular: el cine, el teatro y la prensa periódica, así como algunos proyectos estatales ligados a dicha cultura."
+    },
+    {
+     "t": "p",
+     "x": "Si bien a principios de los años veinte el estereotipo del indio ya se encontraba en proceso de formación, el nacionalismo posrevolucionario se enfrentó a un dilema con respecto a su ubicación como parte de la mexicanidad. Entrelazadas con las múltiples expresiones de la cultura popular, la concepción de lo indígena se debatía entre dos extremos. Por un lado se insistía en incorporarlo al proyecto nacional -por lo menos en el discurso- puesto que se trataba de un sector importantísimo de \"el pueblo mexicano\", pero por otro subsistía la distancia despectiva marcada por los sectores herederos del porfiriato y el insistente sabor de lo exótico con que lo rodeaban. Frente al conservadurismo del charro, el indio aparecía como un complemento subvaluado de la mexicanidad, al que había que reivindicar como parte del \"pueblo\"."
+    },
+    {
+     "t": "p",
+     "x": "En la prensa periódica y en el incipiente cine nacional apareció en un principio una preocupación por la belleza indígena. En 1921, durante la celebración de las fiestas del Centenario de la Consumación de la Independencia, El Universal organizó un sonado concurso llamado \"La India Bonita\" que tuvo como fin escoger a la \"mujer de raza indígena más bella del país\". La ganadora fue María Bibiana Uribe, de quien aquel periódico se refería así: \"...Ha llegado a nosotros acompañada de su abuela, una india pura de raza 'meschica' que no habla español. Viene de la Sierra, donde nació y vivió y aún trae un 'huípil' atado a la cintura. Hoy posee tres mil pesos y una enorme cantidad de obsequios y al verse rodeada de tanta gente desconocida piensa en la leyenda del bello príncipe Tonatiuh que unió sus destinos a los de una plebeya que tenía nombre de flor. Se llama María Bibiana Uribe y tiene 18 años...\""
+    },
+    {
+     "t": "p",
+     "x": "La referencia mítica unía el pasado prehispánico con el presente y permitía una revaloración romántica, y en un tono que sonaba bastante falso, de la belleza indígena. La prensa continuaría con ese tono hasta muy avanzados los años veinte y treinta."
+    }
+   ],
+   "preguntas": [
+    {
+     "q": "Según el texto, ¿con qué nombre se identificó la corriente de pensamiento y de acción del gobierno sobre la población indígena?",
+     "ops": [
+      "Positivismo",
+      "Indigenismo",
+      "Hispanismo",
+      "Agrarismo"
+     ],
+     "k": "82014d6f91c1282e"
+    },
+    {
+     "q": "Según el texto, ¿entre qué dos extremos se debatía la concepción de lo indígena?",
+     "ops": [
+      "Incorporarlo al proyecto nacional o mantener la distancia despectiva",
+      "Darle tierras o llevarlo a vivir a las ciudades",
+      "Enseñarle español o dejarlo con su lengua",
+      "Integrarlo al ejército o a las fábricas"
+     ],
+     "k": "c780f0be11ed525f"
+    },
+    {
+     "q": "Según el texto, frente al conservadurismo del charro, ¿cómo aparecía el indio?",
+     "ops": [
+      "Como el símbolo principal de la nación",
+      "Como un enemigo del proyecto nacional",
+      "Como un complemento subvaluado de la mexicanidad",
+      "Como un tema que sólo atraía a los extranjeros"
+     ],
+     "k": "c38bee39331d5faa"
+    },
+    {
+     "q": "¿Qué organizó El Universal en 1921, durante las fiestas del Centenario de la Consumación de la Independencia?",
+     "ops": [
+      "Un desfile de trajes regionales",
+      "Una exposición de arte popular",
+      "Un concurso de jarabe tapatío",
+      "El concurso \"La India Bonita\""
+     ],
+     "k": "fd6550c1a93b8cc6"
+    },
+    {
+     "q": "¿Cómo describe el autor la revaloración de la belleza indígena que hacía la prensa?",
+     "ops": [
+      "Científica y basada en datos",
+      "Crítica del gobierno de Obregón",
+      "Igual a la del porfiriato",
+      "Romántica y en un tono que sonaba bastante falso"
+     ],
+     "k": "309442f692f2fcd0"
+    }
+   ]
+  }
+ ],
+ "cierre": [],
+ "version": "3378c4c504",
+ "generada": "2026-11-19 23:11",
+ "origen": "Borrador app - Lectura El nacionalismo posrevolucionario (Pérez Montfort).docx"
+}
