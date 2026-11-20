@@ -27,6 +27,7 @@
  },
  "intentos": 2,
  "cuenta": "mejor",
+ "tiempo": 48,
  "bloques": [
   {
    "titulo": "Primera parte: los párrafos",
