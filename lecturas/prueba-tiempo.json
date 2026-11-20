@@ -1,0 +1,100 @@
+{
+ "clave": "prueba-tiempo",
+ "materia": "Prueba",
+ "titulo": "Prueba del cronómetro (no cuenta)",
+ "descripcion": "Lectura corta para probar el cronómetro: 2 minutos en el primer intento y 60 % en el segundo.",
+ "fuente": "Texto de prueba.",
+ "grupos": [
+  "Prueba"
+ ],
+ "abierta": false,
+ "ventana": {
+  "desde": null,
+  "hasta": null
+ },
+ "escala": {
+  "min": 1,
+  "max": 10,
+  "redondeo": "arriba"
+ },
+ "penalizacion": {
+  "cada": 3,
+  "resta": 1
+ },
+ "intentos": 2,
+ "cuenta": "mejor",
+ "bloques": [
+  {
+   "titulo": "Primera parte",
+   "texto": [
+    {
+     "t": "p",
+     "x": "El cielo despejado al mediodía se ve azul. Los perros caminan en cuatro patas."
+    }
+   ],
+   "preguntas": [
+    {
+     "q": "¿De qué color es el cielo despejado al mediodía?",
+     "ops": [
+      "Azul",
+      "Verde",
+      "Rojo",
+      "Negro"
+     ],
+     "k": "545440bdcc2745be"
+    },
+    {
+     "q": "¿Cuántas patas tiene un perro?",
+     "ops": [
+      "Dos",
+      "Tres",
+      "Cuatro",
+      "Seis"
+     ],
+     "k": "3e33ae005d6889ef"
+    }
+   ]
+  },
+  {
+   "titulo": "Segunda parte",
+   "texto": [
+    {
+     "t": "p",
+     "x": "En el salón se escribe en el pizarrón blanco con plumón. Después del lunes viene el martes."
+    }
+   ],
+   "preguntas": [
+    {
+     "q": "¿Qué se usa para escribir en el pizarrón blanco?",
+     "ops": [
+      "Gis",
+      "Plumón",
+      "Lápiz",
+      "Crayón"
+     ],
+     "k": "517202d02f891d62"
+    },
+    {
+     "q": "¿Qué día va después del lunes?",
+     "ops": [
+      "Domingo",
+      "Martes",
+      "Jueves",
+      "Sábado"
+     ],
+     "k": "541cab4b474419b0"
+    }
+   ]
+  }
+ ],
+ "cierre": [
+  {
+   "q": "Escribe una frase sobre cómo te fue con la prueba.",
+   "ayuda": ""
+  }
+ ],
+ "version": "prueba-tiempo-1",
+ "generada": "2026-11-13",
+ "origen": "prueba",
+ "tiempo": 2
+}
