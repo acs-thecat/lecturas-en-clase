@@ -1517,7 +1517,7 @@ button:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-
         return el('li', null, [
           x.aciertos + ' de ' + x.reactivos + ' · ' + veces(x.salidas) + ' · calificación ' + x.calificacion + ' · ',
           el('span', { class: 'codigo', text: x.codigo || '' }),
-          x === cuenta ? el('span', { class: 'cuenta', text: '  ← cuenta' }) : null
+          x === cuenta ? el('span', { class: 'cuenta', text: ' ✅', title: 'Este intento es el que cuenta', 'aria-label': 'cuenta' }) : null
         ]);
       }))
     ]) : null;
