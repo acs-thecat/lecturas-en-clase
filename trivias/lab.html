@@ -1,0 +1,787 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Trivia de repaso del semestre · Laboratorio de Investigación</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<style>
+  :root{
+    --navy:#0e2740; --navy2:#143655; --navy3:#1c4a73;
+    --teal:#2a9d8f; --teal-d:#1f7a72;
+    --gold:#e0b13a; --gold-d:#c2962a;
+    --cream:#f6efe0; --cream-dim:#d9d0bd;
+    --green:#3fb27a; --red:#d9695f;
+    --shadow:0 10px 30px rgba(0,0,0,.35);
+    color-scheme:dark;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;height:100%}
+  body{
+    font-family:"Trebuchet MS","Segoe UI",Verdana,sans-serif;
+    color:var(--cream);
+    background:
+      radial-gradient(1200px 600px at 80% -10%, rgba(42,157,143,.18), transparent 60%),
+      radial-gradient(900px 500px at 0% 110%, rgba(224,177,58,.14), transparent 55%),
+      linear-gradient(160deg,var(--navy) 0%, var(--navy2) 100%);
+    min-height:100vh;
+  }
+  .wrap{max-width:1280px;margin:0 auto;padding-block:22px 60px;padding-left:max(16px, env(safe-area-inset-left, 0px));padding-right:max(16px, env(safe-area-inset-right, 0px))}
+  h1,h2,h3,.serif{font-family:Georgia,"Times New Roman",serif}
+  .hide{display:none !important}
+
+  /* ---------- Header ---------- */
+  header.top{display:flex;align-items:flex-end;justify-content:space-between;
+    gap:16px;flex-wrap:wrap;border-bottom:2px solid rgba(224,177,58,.4);
+    padding-bottom:14px;margin-bottom:18px}
+  header.top h1{margin:0;font-size:clamp(22px,3.2vw,34px);color:var(--cream);
+    letter-spacing:.3px}
+  header.top .sub{color:var(--gold);font-size:13px;letter-spacing:2px;
+    text-transform:uppercase;margin-bottom:4px}
+  .topbtns{display:flex;gap:8px;flex-wrap:wrap}
+
+  button{font-family:inherit;cursor:pointer;border:none;border-radius:10px;
+    transition:transform .12s ease, filter .12s ease, background .15s}
+  button:active{transform:translateY(1px)}
+  .btn{padding:10px 16px;font-weight:700;font-size:14px}
+  .btn-gold{background:var(--gold);color:#241a00}
+  .btn-gold:hover{filter:brightness(1.07)}
+  .btn-teal{background:var(--teal);color:#04201d}
+  .btn-teal:hover{filter:brightness(1.08)}
+  .btn-ghost{background:rgba(255,255,255,.08);color:var(--cream);
+    border:1px solid rgba(255,255,255,.22)}
+  .btn-ghost:hover{background:rgba(255,255,255,.16)}
+
+  /* ---------- Setup ---------- */
+  .setup{max-width:640px;margin:6vh auto 0;background:rgba(255,255,255,.05);
+    border:1px solid rgba(255,255,255,.12);border-radius:18px;padding:30px;
+    box-shadow:var(--shadow)}
+  .setup h2{margin:0 0 6px;font-size:26px}
+  .setup p.lead{margin:0 0 22px;color:var(--cream-dim);line-height:1.5}
+  .setup label{display:block;font-weight:700;margin:18px 0 10px;font-size:14px;
+    letter-spacing:.5px;text-transform:uppercase;color:var(--gold)}
+  .countrow{display:flex;gap:8px;flex-wrap:wrap}
+  .countrow button{flex:1;min-width:48px;padding:12px 0;background:rgba(255,255,255,.07);
+    color:var(--cream);border:1px solid rgba(255,255,255,.18);font-weight:700;font-size:18px}
+  .countrow button.on{background:var(--teal);color:#04201d;border-color:var(--teal)}
+  .names{display:grid;gap:8px;margin-top:6px}
+  .names input{padding:11px 12px;border-radius:9px;border:1px solid rgba(255,255,255,.2);
+    background:rgba(0,0,0,.2);color:var(--cream);font-size:15px;font-family:inherit}
+  .names input:focus{outline:2px solid var(--gold);outline-offset:1px}
+  .setup .go{margin-top:26px;width:100%;padding:15px;font-size:17px}
+
+  /* ---------- Scoreboard ---------- */
+  .scoreboard{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:18px}
+  .team{background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.14);
+    border-radius:12px;padding:8px 12px;display:flex;align-items:center;gap:10px;
+    min-width:150px;flex:1}
+  .team .dot{width:14px;height:14px;border-radius:50%;flex:0 0 auto}
+  .team .nm{font-weight:700;font-size:14px;line-height:1.1}
+  .team .sc{font-family:Georgia,serif;font-size:22px;font-weight:700;color:var(--gold);
+    margin-left:auto}
+  .team .adj{display:flex;flex-direction:column;gap:2px}
+  .team .adj button{width:22px;height:18px;font-size:11px;line-height:1;padding:0;
+    background:rgba(255,255,255,.1);color:var(--cream)}
+  .leader{outline:2px solid var(--gold);box-shadow:0 0 18px rgba(224,177,58,.3)}
+
+  /* ---------- Board ---------- */
+  .board{display:grid;grid-template-columns:repeat(6,1fr);gap:10px}
+  .cat{display:flex;flex-direction:column;gap:10px}
+  .cat-h{background:linear-gradient(180deg,var(--navy3),var(--navy2));
+    border:1px solid rgba(224,177,58,.35);border-radius:10px;padding:12px 8px;
+    text-align:center;min-height:78px;display:flex;align-items:center;justify-content:center}
+  .cat-h span{font-family:Georgia,serif;font-size:13px;font-weight:700;line-height:1.25}
+  .tiles{display:flex;flex-direction:column;gap:10px}
+  .tile{background:linear-gradient(180deg,var(--teal),var(--teal-d));
+    color:#03211e;border-radius:10px;padding:18px 8px;font-family:Georgia,serif;
+    font-size:clamp(20px,2.4vw,30px);font-weight:700;text-align:center;
+    box-shadow:0 4px 0 rgba(0,0,0,.25);}
+  .tile:hover{filter:brightness(1.08)}
+  .tile.used{background:rgba(255,255,255,.04);color:rgba(255,255,255,.18);
+    box-shadow:none;cursor:default;border:1px dashed rgba(255,255,255,.12)}
+  .tile.used:hover{filter:none}
+
+  /* ---------- Modal ---------- */
+  .overlay{position:fixed;inset:0;background:rgba(6,16,28,.82);backdrop-filter:blur(3px);
+    display:flex;align-items:center;justify-content:center;padding:18px;z-index:50;
+    animation:fade .2s ease}
+  @keyframes fade{from{opacity:0}to{opacity:1}}
+  .modal{width:min(860px,100%);max-height:92vh;overflow:auto;background:linear-gradient(160deg,#fbf6ea,#f0e7d2);
+    color:#1a2433;border-radius:18px;box-shadow:var(--shadow);padding:26px 28px}
+  .modal .meta{display:flex;justify-content:space-between;align-items:center;
+    font-size:13px;text-transform:uppercase;letter-spacing:1.5px;color:var(--teal-d);
+    font-weight:700;border-bottom:2px solid rgba(42,157,143,.3);padding-bottom:10px}
+  .modal .pts{color:var(--gold-d)}
+  .q{font-family:Georgia,serif;font-size:clamp(19px,2.3vw,24px);line-height:1.42;
+    margin:18px 0 20px;color:#10202f}
+  .opts{display:grid;gap:10px}
+  .opt{display:flex;gap:12px;align-items:flex-start;background:#fff;
+    border:2px solid #e3d8bf;border-radius:11px;padding:13px 15px;font-size:16px;
+    line-height:1.4;color:#22303f}
+  .opt .lt{font-family:Georgia,serif;font-weight:700;color:var(--teal-d);
+    flex:0 0 auto;font-size:18px}
+  .opt.correct{background:#e7f6ee;border-color:var(--green)}
+  .opt.correct .lt{color:#1f8a59}
+  .opt.correct::after{content:"✓";margin-left:auto;color:var(--green);font-weight:900;font-size:20px}
+  .expl{margin-top:16px;background:rgba(42,157,143,.1);border-left:4px solid var(--teal);
+    border-radius:0 10px 10px 0;padding:13px 16px;font-size:15px;line-height:1.5;color:#1c3b39}
+  .expl b{color:var(--teal-d)}
+  .modal .actions{margin-top:22px;display:flex;flex-wrap:wrap;gap:10px;align-items:center}
+  .award-label{width:100%;font-weight:700;font-size:14px;color:#3a4654;margin-bottom:2px}
+  .award{display:flex;flex-wrap:wrap;gap:8px;width:100%}
+  .award button{padding:10px 14px;font-weight:700;font-size:14px;color:#fff}
+  .award .none{background:#8a93a0}
+
+  /* ---------- Results ---------- */
+  .results{text-align:center}
+  .results h2{font-size:30px;margin:0 0 4px}
+  .results .crown{font-size:46px}
+  .rank{list-style:none;padding:0;margin:18px 0;display:grid;gap:8px}
+  .rank li{display:flex;align-items:center;gap:12px;background:rgba(255,255,255,.06);
+    border:1px solid rgba(255,255,255,.14);border-radius:11px;padding:11px 16px;color:var(--cream)}
+  .rank li .pos{font-family:Georgia,serif;font-size:20px;color:var(--gold);width:30px}
+  .rank li .pts{margin-left:auto;font-family:Georgia,serif;font-size:20px;font-weight:700}
+  .rank li.first{outline:2px solid var(--gold)}
+
+  .footnote{margin-top:26px;color:var(--cream-dim);font-size:12px;text-align:center;line-height:1.5}
+
+  @media(max-width:760px){
+    .board{grid-template-columns:1fr;gap:14px}
+    .cat{border:1px solid rgba(255,255,255,.1);border-radius:12px;padding:10px}
+    .cat-h{min-height:auto}
+    .cat .tiles{display:grid;grid-template-columns:repeat(5,1fr);gap:8px}
+    .tile{padding:14px 4px;font-size:18px}
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <!-- SETUP -->
+  <section id="setup" class="setup">
+    <div class="sub serif" style="font-family:Georgia,serif">Laboratorio de Investigación</div>
+    <h2>Trivia de repaso del semestre</h2>
+    <p class="lead">Concurso por equipos sobre todo el semestre: del enfoque cualitativo a la ética, pasando por la pregunta, el objetivo, la hipótesis y la entrevista. Casi todas las preguntas son de alumnos de primero. Elige cuántos equipos jugarán y dales un nombre.</p>
+
+    <label>¿Cuántos equipos?</label>
+    <div class="countrow" id="countRow"></div>
+
+    <label>Nombres de los equipos</label>
+    <div class="names" id="names"></div>
+
+    <button class="btn btn-gold go" onclick="startGame()">Comenzar el juego ▸</button>
+  </section>
+
+  <!-- GAME -->
+  <section id="game" class="hide">
+    <header class="top">
+      <div>
+        <div class="sub">Laboratorio de Investigación · semestre</div>
+        <h1>Tablero de repaso</h1>
+      </div>
+      <div class="topbtns">
+        <button class="btn btn-gold" onclick="showResults()">Terminar y ver resultados</button>
+        <button class="btn btn-ghost" onclick="resetScores()">Reiniciar marcador</button>
+        <button class="btn btn-ghost" onclick="newGame()">Nuevo juego</button>
+      </div>
+    </header>
+
+    <div class="scoreboard" id="scoreboard"></div>
+    <div class="board" id="board"></div>
+
+    <p class="footnote">Haz clic en un puntaje para abrir el reactivo · Lee la pregunta, da tiempo a los equipos para deliberar · Revela la respuesta y asigna los puntos al equipo que acertó.</p>
+  </section>
+
+</div>
+
+<!-- MODAL CONTAINER -->
+<div id="modalRoot"></div>
+
+<script>
+/* ====== CONTENIDO: 30 reactivos en 6 temas, repaso de todo el semestre. ====== */
+const CATEGORIES = [
+ {
+  "name": "¿Cualitativo o cuantitativo?",
+  "items": [
+   {
+    "pts": 100,
+    "q": "¿Qué enfoque mide magnitudes con instrumentos estandarizados y busca generalizar?",
+    "opts": [
+     "El enfoque cualitativo.",
+     "El enfoque fenomenológico.",
+     "El enfoque cuantitativo.",
+     "El enfoque histórico."
+    ],
+    "correct": 2,
+    "expl": "Va en orden, de la hipótesis a la medición. El cualitativo es flexible y busca los significados que la gente le da a lo que vive. Dónde repasarlo: Sesión 1, diapositivas 3 y 4."
+   },
+   {
+    "pts": 200,
+    "q": "Un equipo quiere saber cómo viven su oficio los lavacarros de Morelia. ¿Qué le sirve más?",
+    "opts": [
+     "Entrevistas abiertas con varios de ellos.",
+     "Un cuestionario cerrado para cien de ellos.",
+     "Una tabla con sus precios por lavado.",
+     "Un conteo de autos lavados por día."
+    ],
+    "correct": 0,
+    "expl": "Cómo viven el oficio sólo lo pueden contar ellos, con sus palabras. Los números no dicen qué significa el trabajo para quien lo hace. Dónde repasarlo: Sesión 1, diapositiva 4."
+   },
+   {
+    "pts": 300,
+    "q": "\"¿Qué tan satisfechos se sienten los barberos de Fuentes de Morelia con su sueldo?\" ¿Qué le falla?",
+    "opts": [
+     "Pregunta por el negocio y no por los barberos.",
+     "No dice en qué lugar trabajan esos barberos.",
+     "Va dirigida a un solo barbero, en segunda persona.",
+     "Pide una escala del uno al diez: es cuantitativa."
+    ],
+    "correct": 3,
+    "expl": "\"¿Qué tan...?\", \"¿cuánto...?\" y \"¿cuántos...?\" piden un número. Así queda: \"¿Cómo valoran los barberos de la colonia Fuentes de Morelia lo que ganan?\". Dónde repasarlo: banco de preguntas de investigación."
+   },
+   {
+    "pts": 400,
+    "q": "\"¿Cómo influye el ser barbero en la vida de los barberos de Morelia?\" ¿Qué palabra la vuelve cuantitativa?",
+    "opts": [
+     "\"Cómo\", porque pide una lista de pasos.",
+     "\"Influye\", porque pide medir un efecto.",
+     "\"Vida\", porque es un tema muy amplio.",
+     "\"Morelia\", porque es un lugar grande."
+    ],
+    "correct": 1,
+    "expl": "Influye, impacto, afecta y determina piden medir causa y efecto. Mejor: \"¿Qué lugar ocupa el oficio en la vida diaria de los barberos de Morelia?\". Dónde repasarlo: banco de preguntas de investigación."
+   },
+   {
+    "pts": 500,
+    "q": "En el enfoque cualitativo, ¿cuándo pueden surgir las preguntas y las hipótesis?",
+    "opts": [
+     "Antes, durante o después de recoger los datos.",
+     "Sólo antes de salir al campo y nunca cambian.",
+     "Sólo al final, cuando ya terminó el análisis.",
+     "Sólo cuando ya se tienen cientos de casos medidos."
+    ],
+    "correct": 0,
+    "expl": "Es flexible, inductivo y circular: se va y se vuelve entre el campo y las ideas. Por eso la hipótesis puede cambiar con cada entrevista. Dónde repasarlo: Sesión 1, diapositiva 4."
+   }
+  ]
+ },
+ {
+  "name": "Del tema a la pregunta",
+  "items": [
+   {
+    "pts": 100,
+    "q": "¿Cuál de estos sí es un tema completo?",
+    "opts": [
+     "La construcción y el trabajo de todos los albañiles de este país.",
+     "Los albañiles de obra pequeña en mi municipio, entre 2024 y 2026.",
+     "Mi tío, que trabaja de albañil en una obra grande de mi municipio.",
+     "Los albañiles de mi municipio ganan muy poco por lo que hacen."
+    ],
+    "correct": 1,
+    "expl": "Un tema lleva sujeto, lugar y periodo. Los otros son demasiado amplio, una anécdota y una opinión. Dónde repasarlo: Sesión 4, diapositiva 2."
+   },
+   {
+    "pts": 200,
+    "q": "¿Con qué palabras empieza casi siempre un problema de investigación?",
+    "opts": [
+     "¿Cuántos?, ¿cuándo? o ¿en dónde?",
+     "¿Quién?, ¿cuál? o ¿cuánto cuesta eso?",
+     "¿Por qué?, ¿cómo? o ¿qué significa?",
+     "¿Es cierto?, ¿se puede? o ¿hay?"
+    ],
+    "correct": 2,
+    "expl": "El problema es lo que te cuestionas del tema. Las otras se contestan con un dato, un número o un sí. Dónde repasarlo: Sesión 4, diapositiva 3."
+   },
+   {
+    "pts": 300,
+    "q": "\"¿Los albañiles ganan poco?\" ¿Qué le falla a esta pregunta?",
+    "opts": [
+     "Nadie entiende bien qué es lo que pregunta.",
+     "No hay nadie a quién ir a preguntarle eso.",
+     "Pregunta por la obra y no por el oficio.",
+     "Se puede contestar con un simple sí o no."
+    ],
+    "correct": 3,
+    "expl": "Si te contestan \"sí\", se acabó la investigación. Arreglada: \"¿Cómo le hacen para que les alcance la semana los albañiles de mi colonia?\". Dónde repasarlo: Sesión 4, diapositiva 5."
+   },
+   {
+    "pts": 400,
+    "q": "En \"¿Cómo consiguen trabajo los albañiles de mi colonia, hoy?\", ¿qué pieza es \"de mi colonia, hoy\"?",
+    "opts": [
+     "Dónde y cuándo se investiga.",
+     "Lo que quiero saber de ellos.",
+     "A quiénes se les pregunta.",
+     "La palabra con la que inicia."
+    ],
+    "correct": 0,
+    "expl": "Las cuatro piezas: la palabra interrogante (\"¿Cómo\"), lo que quiero saber (\"consiguen trabajo\"), a quiénes (\"los albañiles\") y dónde y cuándo. Dónde repasarlo: Sesión 4, diapositiva 6."
+   },
+   {
+    "pts": 500,
+    "q": "\"¿Cuáles son las estrategias de los carpinteros para promocionar sus muebles?\" ¿Cómo queda mejor?",
+    "opts": [
+     "¿Cuánto venden cada mes los carpinteros de mi colonia, hoy?",
+     "¿Qué muebles anuncian más los carpinteros de mi colonia, hoy?",
+     "¿Cómo dan a conocer su trabajo los carpinteros de mi colonia?",
+     "¿Cómo promocionarías tus muebles si tú fueras uno de ellos?"
+    ],
+    "correct": 2,
+    "expl": "La original pregunta por el negocio, no por las personas, y le falta el lugar. Las otras piden un número, una lista o hablan de quien pregunta. Dónde repasarlo: banco de preguntas de investigación."
+   }
+  ]
+ },
+ {
+  "name": "Pregunta, objetivo e hipótesis",
+  "items": [
+   {
+    "pts": 100,
+    "q": "¿Qué relación hay entre la pregunta de investigación y el objetivo?",
+    "opts": [
+     "El objetivo es la respuesta a la pregunta.",
+     "Son la misma frase dicha de dos maneras.",
+     "El objetivo se escribe después del campo.",
+     "La pregunta es más amplia que el objetivo."
+    ],
+    "correct": 1,
+    "expl": "La pregunta dice lo que no saben; el objetivo, lo que van a hacer para saberlo. Sólo cambia el arranque: un verbo en infinitivo. Dónde repasarlo: Sesión 6, diapositiva 2."
+   },
+   {
+    "pts": 200,
+    "q": "¿Cuál de estos verbos cierra la investigación antes de empezar?",
+    "opts": [
+     "Comprender.",
+     "Describir.",
+     "Explorar.",
+     "Demostrar."
+    ],
+    "correct": 3,
+    "expl": "Demostrar, probar y comprobar prometen un resultado que sólo se consigue midiendo. Los otros dejan que los sujetos digan lo que pasa. Dónde repasarlo: Sesión 6, diapositiva 7."
+   },
+   {
+    "pts": 300,
+    "q": "\"Comprender cómo aprendieron el oficio los taqueros del mercado y por qué sus hijos ya no quieren seguirlo.\" ¿Qué le pasa?",
+    "opts": [
+     "Son dos objetivos pegados con una \"y\".",
+     "Usa un verbo que obliga a medir algo.",
+     "Ya decidió el resultado con un adjetivo.",
+     "Está escrito como una pregunta de entrevista."
+    ],
+    "correct": 0,
+    "expl": "Hay que contar las \"y\": si unen dos cosas, son dos objetivos y hay que soltar uno. Dónde repasarlo: Sesión 6, diapositivas 8 y 9."
+   },
+   {
+    "pts": 400,
+    "q": "En una investigación cualitativa, ¿qué pasa si la entrevista contradice la hipótesis?",
+    "opts": [
+     "Se busca a otra persona que sí la confirme.",
+     "Se repite la entrevista hasta que salga igual.",
+     "La hipótesis cambia: eso también es un hallazgo.",
+     "Se quita esa entrevista del análisis del equipo."
+    ],
+    "correct": 2,
+    "expl": "Es una hipótesis de trabajo: no se prueba con estadística, se contrasta con lo que dice la gente. Equivocarse también es un hallazgo. Dónde repasarlo: Sesión 12, diapositivas 6 y 7."
+   },
+   {
+    "pts": 500,
+    "q": "Pregunta particular: \"¿Qué hace que los carniceros sigan en el oficio cuando bajan las ventas?\" ¿Cuál es una buena hipótesis?",
+    "opts": [
+     "Siguen porque no estudiaron y no saben hacer otra cosa.",
+     "Creemos que siguen porque el negocio es de su familia.",
+     "Vamos a demostrar que los carniceros ganan muy poco.",
+     "Siguen por su familia y porque les gusta mucho vender."
+    ],
+    "correct": 1,
+    "expl": "Las otras se caen: una juzga antes de escuchar, otra promete demostrar y la última pega dos hipótesis con una \"y\". Dónde repasarlo: Sesión 12, diapositivas 8 y 9."
+   }
+  ]
+ },
+ {
+  "name": "Al campo: observar y entrevistar",
+  "items": [
+   {
+    "pts": 100,
+    "q": "\"Está cansado.\" ¿En qué columna de la bitácora de campo va?",
+    "opts": [
+     "En lo que observamos, con la hora exacta.",
+     "En el lugar donde se hizo la entrada.",
+     "En los apellidos de quienes la escribieron.",
+     "En lo que interpretamos o nos preguntamos."
+    ],
+    "correct": 3,
+    "expl": "Si cualquier otra persona parada ahí vería lo mismo, es observación. \"Cansado\" es lo que nosotros pensamos al verlo. Dónde repasarlo: Sesión 8, diapositivas 1 y 2."
+   },
+   {
+    "pts": 200,
+    "q": "¿Cuál de estas frases es una observación, y no una interpretación?",
+    "opts": [
+     "Lleva una cubeta azul y un trapeador.",
+     "Lo hace así porque es más rápido.",
+     "Se ve cansado y un poco aburrido.",
+     "Hay demasiada gente en todo el pasillo."
+    ],
+    "correct": 0,
+    "expl": "\"Porque\", \"se ve\", \"parece\", \"creo\" y \"mucho\" delatan una interpretación. Dónde repasarlo: Sesión 8, diapositivas 2 y 3."
+   },
+   {
+    "pts": 300,
+    "q": "\"¿Cómo te ganas a tus clientas?\" ¿Qué tipo de pregunta es?",
+    "opts": [
+     "De investigación: habla de todo un grupo.",
+     "De entrevista: es para una sola persona.",
+     "De investigación: trae lugar y periodo.",
+     "De entrevista: sólo sirve para cerrar."
+    ],
+    "correct": 1,
+    "expl": "Si una sola persona puede contestarla en ese momento, hablando de sí misma, es de entrevista. La de investigación habla de un grupo, un lugar y un periodo. Dónde repasarlo: Sesión 9, actividad \"¿De investigación o de entrevista?\"."
+   },
+   {
+    "pts": 400,
+    "q": "¿En qué orden van las preguntas de la guía de entrevista?",
+    "opts": [
+     "Delicadas, generales, complejas y de cierre.",
+     "Complejas, delicadas, generales y de cierre.",
+     "Generales, complejas, delicadas y de cierre.",
+     "De cierre, generales, delicadas y complejas."
+    ],
+    "correct": 2,
+    "expl": "Primero lo fácil, para ganar confianza; lo delicado va al final, como lo hizo Eva con los albañiles. Dónde repasarlo: Sesión 9, diapositiva 6, y Sesión 10, bloque 3."
+   },
+   {
+    "pts": 500,
+    "q": "\"¿A qué huele el taller cuando barniza un mueble?\" ¿Qué tipo de pregunta es, según Mertens?",
+    "opts": [
+     "De opinión.",
+     "De simulación.",
+     "De antecedentes.",
+     "Sensitiva."
+    ],
+    "correct": 3,
+    "expl": "Las sensitivas preguntan por lo que se ve, se oye o se huele. Las de opinión, por lo que piensa; las de antecedentes, por lo que ha vivido. Dónde repasarlo: Sesión 9, diapositiva 5."
+   }
+  ]
+ },
+ {
+  "name": "¿A quién? La muestra y el protocolo",
+  "items": [
+   {
+    "pts": 100,
+    "q": "En una investigación cualitativa, ¿qué importa más al elegir a quién entrevistar?",
+    "opts": [
+     "Que sean muchos, para poder generalizar.",
+     "Que ayuden a entender el problema.",
+     "Que se escojan al azar entre todos.",
+     "Que representen a todo el país entero."
+    ],
+    "correct": 1,
+    "expl": "Importa la riqueza y la profundidad de la información, no la cantidad. Por eso el tamaño de la muestra no se fija antes de empezar. Dónde repasarlo: Lectura 2, La muestra cualitativa, bloque 1."
+   },
+   {
+    "pts": 200,
+    "q": "¿Cuándo se dejan de buscar más personas para entrevistar?",
+    "opts": [
+     "Cuando ya no aparece información nueva.",
+     "Cuando se llega a las cien entrevistas.",
+     "Cuando el equipo se cansó de buscar.",
+     "Cuando todas dicen lo que suponíamos."
+    ],
+    "correct": 0,
+    "expl": "Se llama saturación de categorías: los casos nuevos ya no agregan nada que ayude a responder la pregunta. Dónde repasarlo: Lectura 2, La muestra cualitativa, bloque 1."
+   },
+   {
+    "pts": 300,
+    "q": "Un equipo entrevista a la panadera con cuarenta años en el oficio porque sabe más que nadie. ¿Qué muestra es?",
+    "opts": [
+     "De expertos.",
+     "De voluntarios.",
+     "Por conveniencia.",
+     "De casos tipo."
+    ],
+    "correct": 0,
+    "expl": "Para sus proyectos, quien ejerce el oficio es el experto. La de voluntarios se forma con quien se ofrece; la de conveniencia, con quien está a la mano. Dónde repasarlo: Lectura 2, La muestra cualitativa, bloques 3 y 4."
+   },
+   {
+    "pts": 400,
+    "q": "En el protocolo, ¿qué parte dice el enfoque, el tipo de entrevista y a quién se va a entrevistar?",
+    "opts": [
+     "El planteamiento.",
+     "La justificación.",
+     "La metodología.",
+     "La hipótesis."
+    ],
+    "correct": 2,
+    "expl": "El planteamiento lleva título, tema, problema y justificación. La metodología dice cómo y con quién se va a investigar. Dónde repasarlo: Sesión 13, actividad \"Mi protocolo de investigación\"."
+   },
+   {
+    "pts": 500,
+    "q": "En el protocolo, ¿de dónde sale cada objetivo particular?",
+    "opts": [
+     "De la hipótesis que escribió todo el equipo.",
+     "De la respuesta que dio el entrevistado.",
+     "Del título que lleva toda la investigación.",
+     "De traducir la pregunta particular que toca."
+    ],
+    "correct": 3,
+    "expl": "Es la misma frase con otro arranque. Si una pregunta particular no se deja traducir, está mal planteada. Dónde repasarlo: Sesión 12, diapositiva 4."
+   }
+  ]
+ },
+ {
+  "name": "Ética y fuentes",
+  "items": [
+   {
+    "pts": 100,
+    "q": "¿Qué se necesita de la persona antes de grabarla en una entrevista?",
+    "opts": [
+     "Una copia de su credencial para votar.",
+     "Su consentimiento, de preferencia por escrito.",
+     "La aprobación escrita de todos sus familiares.",
+     "Su firma debajo de cada respuesta grabada."
+    ],
+    "correct": 1,
+    "expl": "Si se va a grabar a los participantes, en audio o en video, ellos deben aprobarlo. Para eso es la carta de autorización. Dónde repasarlo: Lectura 4, La ética en la investigación, bloque 1."
+   },
+   {
+    "pts": 200,
+    "q": "La persona no acepta que la graben en video. ¿Qué hace el equipo?",
+    "opts": [
+     "La graba sin avisar, con el celular.",
+     "Busca a otra persona que sí acepte.",
+     "Escribe de memoria lo que respondió.",
+     "Usa la entrevista de otro equipo."
+    ],
+    "correct": 1,
+    "expl": "Sin consentimiento no se graba, y sin grabación no hay evidencia de la entrevista. Por eso hay que avisar desde que se pide la cita. Dónde repasarlo: Proyecto 3 y carta de autorización."
+   },
+   {
+    "pts": 300,
+    "q": "¿Por qué se usan seudónimos en una investigación?",
+    "opts": [
+     "Para que el informe se lea más bonito.",
+     "Para no tener que pedir permiso a nadie.",
+     "Para que nadie pueda revisar el trabajo.",
+     "Para no revelar quién dio cada dato."
+    ],
+    "correct": 3,
+    "expl": "Es la confidencialidad: no se revela la identidad de los participantes ni de quién salió cada dato. Dónde repasarlo: Lectura 4, La ética en la investigación, bloque 2."
+   },
+   {
+    "pts": 400,
+    "q": "¿Qué hizo el periodista Stephen Glass en \"El precio de la verdad\"?",
+    "opts": [
+     "Copió los artículos de otros periodistas.",
+     "Reveló el nombre de una fuente secreta.",
+     "Inventó fuentes, citas y hasta empresas.",
+     "Publicó unas fotografías sin pedir permiso."
+    ],
+    "correct": 2,
+    "expl": "Por eso en su proyecto cada foto lleva una cita literal con su minuto: la grabación demuestra que la persona sí lo dijo. Dónde repasarlo: Actividad 3, Shattered Glass."
+   },
+   {
+    "pts": 500,
+    "q": "En la actividad de la fuente falsa, ¿qué delataba a la fuente inventada?",
+    "opts": [
+     "Era un autor real, con un libro inventado.",
+     "El libro estaba en inglés y no en español.",
+     "La fuente tenía más de diez años de vieja.",
+     "El texto citaba al autor con su página."
+    ],
+    "correct": 0,
+    "expl": "Lo falso se esconde junto a lo verdadero: un autor real con un libro que nunca escribió. Por eso hay que buscar cada fuente, no sólo el nombre. Dónde repasarlo: Actividad 4, ¿Cuál es la fuente falsa?."
+   }
+  ]
+ }
+];
+
+const LETTERS = ["A","B","C","D"];
+const COLORS = ["#e0b13a","#2a9d8f","#d9695f","#7aa6d6","#b48ad9","#6fc28b"];
+
+let teams = [];        // {name, score, color}
+let teamCount = 4;
+let used = {};         // "cat-row" -> true
+
+/* ---------- SETUP UI ---------- */
+function buildSetup(){
+  const cr = document.getElementById('countRow');
+  cr.innerHTML='';
+  for(let n=2;n<=6;n++){
+    const b=document.createElement('button');
+    b.textContent=n;
+    if(n===teamCount) b.classList.add('on');
+    b.onclick=()=>{teamCount=n; buildSetup();};
+    cr.appendChild(b);
+  }
+  const nm=document.getElementById('names');
+  const prev=[...nm.querySelectorAll('input')].map(i=>i.value);
+  nm.innerHTML='';
+  for(let i=0;i<teamCount;i++){
+    const inp=document.createElement('input');
+    inp.placeholder='Equipo '+(i+1);
+    inp.value=prev[i]||('Equipo '+(i+1));
+    nm.appendChild(inp);
+  }
+}
+
+function startGame(){
+  const inputs=[...document.querySelectorAll('#names input')];
+  teams=inputs.map((inp,i)=>({
+    name:(inp.value.trim()||('Equipo '+(i+1))),
+    score:0,
+    color:COLORS[i%COLORS.length]
+  }));
+  used={};
+  document.getElementById('setup').classList.add('hide');
+  document.getElementById('game').classList.remove('hide');
+  renderScoreboard();
+  renderBoard();
+}
+
+function newGame(){
+  document.getElementById('game').classList.add('hide');
+  document.getElementById('setup').classList.remove('hide');
+  buildSetup();
+}
+
+function resetScores(){
+  teams.forEach(t=>t.score=0);
+  used={};
+  renderScoreboard(); renderBoard();
+}
+
+/* ---------- SCOREBOARD ---------- */
+function renderScoreboard(){
+  const max=Math.max(...teams.map(t=>t.score),0);
+  const sb=document.getElementById('scoreboard');
+  sb.innerHTML='';
+  teams.forEach((t,i)=>{
+    const el=document.createElement('div');
+    el.className='team'+(t.score>0&&t.score===max?' leader':'');
+    el.innerHTML=`
+      <span class="dot" style="background:${t.color}"></span>
+      <div><div class="nm">${escapeHtml(t.name)}</div></div>
+      <span class="sc">${t.score}</span>
+      <span class="adj">
+        <button onclick="adjust(${i},100)">+</button>
+        <button onclick="adjust(${i},-100)">−</button>
+      </span>`;
+    sb.appendChild(el);
+  });
+}
+function adjust(i,delta){ teams[i].score+=delta; renderScoreboard(); }
+
+/* ---------- BOARD ---------- */
+function renderBoard(){
+  const board=document.getElementById('board');
+  board.innerHTML='';
+  CATEGORIES.forEach((cat,c)=>{
+    const col=document.createElement('div');
+    col.className='cat';
+    const h=document.createElement('div');
+    h.className='cat-h';
+    h.innerHTML=`<span>${cat.name}</span>`;
+    col.appendChild(h);
+    const tiles=document.createElement('div');
+    tiles.className='tiles';
+    cat.items.forEach((it,r)=>{
+      const key=c+'-'+r;
+      const tile=document.createElement('button');
+      tile.className='tile'+(used[key]?' used':'');
+      tile.textContent=used[key]?'✓':it.pts;
+      if(!used[key]) tile.onclick=()=>openQuestion(c,r);
+      tiles.appendChild(tile);
+    });
+    col.appendChild(tiles);
+    board.appendChild(col);
+  });
+}
+
+/* ---------- QUESTION MODAL ---------- */
+function openQuestion(c,r){
+  const cat=CATEGORIES[c], it=cat.items[r], key=c+'-'+r;
+  const root=document.getElementById('modalRoot');
+  const optsHtml=it.opts.map((o,k)=>
+    `<div class="opt" id="opt-${k}"><span class="lt">${LETTERS[k]}</span><span>${escapeHtml(o)}</span></div>`
+  ).join('');
+  root.innerHTML=`
+    <div class="overlay">
+      <div class="modal">
+        <div class="meta"><span>${escapeHtml(cat.name)}</span><span class="pts">${it.pts} pts</span></div>
+        <div class="q">${escapeHtml(it.q)}</div>
+        <div class="opts">${optsHtml}</div>
+        <div id="explBox"></div>
+        <div class="actions" id="actions">
+          <button class="btn btn-gold" onclick="reveal(${c},${r})">Revelar respuesta</button>
+          <button class="btn btn-ghost" onclick="closeModal()">Cerrar sin puntos</button>
+        </div>
+      </div>
+    </div>`;
+}
+
+function reveal(c,r){
+  const it=CATEGORIES[c].items[r];
+  document.getElementById('opt-'+it.correct).classList.add('correct');
+  document.getElementById('explBox').innerHTML=
+    `<div class="expl"><b>Por qué:</b> ${escapeHtml(it.expl)}</div>`;
+  const acts=document.getElementById('actions');
+  acts.innerHTML='<div class="award-label">¿Qué equipo acertó? (suma '+it.pts+' pts)</div><div class="award" id="awardRow"></div>';
+  const row=document.getElementById('awardRow');
+  teams.forEach((t,i)=>{
+    const b=document.createElement('button');
+    b.style.background=t.color;
+    b.style.color='#10202f';
+    b.textContent=t.name;
+    b.onclick=()=>award(c,r,i);
+    row.appendChild(b);
+  });
+  const none=document.createElement('button');
+  none.className='none';
+  none.textContent='Nadie acertó';
+  none.onclick=()=>award(c,r,-1);
+  row.appendChild(none);
+}
+
+function award(c,r,teamIdx){
+  const it=CATEGORIES[c].items[r];
+  if(teamIdx>=0) teams[teamIdx].score+=it.pts;
+  used[c+'-'+r]=true;
+  closeModal();
+  renderScoreboard();
+  renderBoard();
+  if(Object.keys(used).length===CATEGORIES.reduce((n,c)=>n+c.items.length,0)) showResults();
+}
+
+function closeModal(){ document.getElementById('modalRoot').innerHTML=''; }
+
+/* ---------- RESULTS ---------- */
+function showResults(){
+  const ranked=[...teams].sort((a,b)=>b.score-a.score);
+  const top=ranked[0].score;
+  const items=ranked.map((t,i)=>
+    `<li class="${t.score===top?'first':''}">
+       <span class="pos">${i+1}.º</span>
+       <span class="dot" style="display:inline-block;width:14px;height:14px;border-radius:50%;background:${t.color}"></span>
+       <span style="font-weight:700">${escapeHtml(t.name)}</span>
+       <span class="pts">${t.score}</span>
+     </li>`).join('');
+  const winners=ranked.filter(t=>t.score===top).map(t=>t.name).join(" y ");
+  document.getElementById('modalRoot').innerHTML=`
+    <div class="overlay">
+      <div class="modal results" style="background:linear-gradient(160deg,#143655,#0e2740);color:#f6efe0;border:1px solid rgba(224,177,58,.4)">
+        <div class="crown">👑</div>
+        <h2 style="color:#f6efe0">¡Fin del repaso!</h2>
+        <p style="color:#e0b13a;font-size:18px;margin:0">Ganó: <b>${escapeHtml(winners)}</b></p>
+        <ul class="rank">${items}</ul>
+        <div style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap">
+          <button class="btn btn-gold" onclick="resetScores();closeModal()">Volver a jugar</button>
+          <button class="btn btn-ghost" onclick="newGame();closeModal()">Nuevos equipos</button>
+        </div>
+      </div>
+    </div>`;
+}
+
+/* ---------- util ---------- */
+function escapeHtml(s){return s.replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));}
+
+buildSetup();
+</script>
+</body>
+</html>
